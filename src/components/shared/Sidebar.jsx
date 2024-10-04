@@ -18,7 +18,7 @@ const Sidebar = () => {
           alt="Trip Wonder Avatar"
           className="h-10 w-10 rounded-full bg-sky-500 bg-cover bg-no-repeat bg-center"
         />
-        <span className="text-neutral-100 text-lg">Trip Wonder</span>
+        <span className="text-neutral-100 text-lg">Ticket Resell</span>
       </div>
       <div className="flex-1 py-8 flex flex-col gap-0.5">
         {DASHBOARD_SIDEBAR_LINKS.map((item) => (
