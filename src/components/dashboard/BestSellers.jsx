@@ -31,11 +31,11 @@ const bestSellersData = [
 const BestSellers = () => {
   return (
     <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 w-[20rem]">
-      <strong className="text-gray-700 font-medium">Best Sellers</strong>
+      <strong className="text-gray-700 font-medium">Top Reputation</strong>
       <div className="mt-4 flex flex-col gap-3">
         {bestSellersData.map((seller) => (
           <Link to={`/users/${seller.id}`} className="flex hover:no-underline">
-            <div className="w-10 h-10 min-w-10 bg-gray-200 rounded-sm overflow-hidden">
+            <div className="w-10 h-10 min-w-10 rounded-sm overflow-hidden">
               <img
                 className="h-10 w-10 rounded-full bg-sky-500 bg-cover bg-no-repeat bg-center"
                 src={seller.avatar}
@@ -46,13 +46,7 @@ const BestSellers = () => {
               <p className="text-sm text-gray-800 font-bold font-semibold">
                 {seller.customerName}
               </p>
-              <span
-                className={`text-sm font-medium ${
-                  seller.point === 0 ? "text-orange-500" : "text-green-500"
-                }`}
-              >
-                {seller.point} points
-              </span>
+              <span className="text-green-500">{seller.point} points</span>
             </div>
           </Link>
         ))}
