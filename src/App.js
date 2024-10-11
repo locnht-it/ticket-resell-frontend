@@ -12,6 +12,9 @@ import Login from "./components/login/Login";
 import ChangePassword from "./components/changepassword/ChangePassword";
 import ProfilePage from "./components/profile/Profile";
 import ProfileUpdate from "./components/profile/ProfileUpdate";
+import TransactionDetails from "./components/transaction/TransactionDetails";
+import PlatformFeeAddNew from "./components/platformfee/PlatformFeeAddNew";
+import PlatformFeeUpdate from "./components/platformfee/PlatformFeeUpdate";
 
 function App() {
   return (
@@ -21,8 +24,14 @@ function App() {
           <Route index element={<Dashboard />} />
 
           <Route path="/transaction" element={<Transaction />} />
+          <Route path="/transaction/:id" element={<TransactionDetails />} />
 
           <Route path="/platform-fee" element={<PlatformFee />} />
+          <Route path="/platform-fee/save" element={<PlatformFeeAddNew />} />
+          <Route
+            path="/platform-fee/update/:id"
+            element={<PlatformFeeUpdate />}
+          />
 
           <Route path="/user" element={<User />} />
 

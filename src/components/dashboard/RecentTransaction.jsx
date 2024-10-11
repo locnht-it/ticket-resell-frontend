@@ -6,6 +6,7 @@ const recentTransactionData = [
   {
     id: `1`,
     platformFeeId: `1`,
+    platformFeeName: `Package 10`,
     customerId: `10000`,
     customerName: `NamLee`,
     transactionDate: `2024-09-09`,
@@ -15,6 +16,7 @@ const recentTransactionData = [
   {
     id: `2`,
     platformFeeId: `2`,
+    platformFeeName: `Package 20`,
     customerId: `10000`,
     customerName: `Hieu Chu Nhat`,
     transactionDate: `2024-09-09`,
@@ -24,6 +26,7 @@ const recentTransactionData = [
   {
     id: `3`,
     platformFeeId: `3`,
+    platformFeeName: `Package 30`,
     customerId: `10000`,
     customerName: `Minh Ta`,
     transactionDate: `2024-09-09`,
@@ -33,6 +36,7 @@ const recentTransactionData = [
   {
     id: `4`,
     platformFeeId: `4`,
+    platformFeeName: `Package 40`,
     customerId: `10000`,
     customerName: `Vo Van Tinh`,
     transactionDate: `2024-09-09`,
@@ -50,11 +54,11 @@ const RecentTransaction = () => {
           <thead>
             <tr>
               <td>ID</td>
-              <td>PlatfromFee ID</td>
+              <td>PlatfromFee</td>
               <td>Customer Name</td>
               <td>Transaction Date</td>
               <td>Price</td>
-              <td>Order Status</td>
+              <td>Transaction Status</td>
             </tr>
           </thead>
           <tbody>
@@ -67,7 +71,7 @@ const RecentTransaction = () => {
                 </td>
                 <td>
                   <Link to={`/tours/${transaction.platformFeeId}`}>
-                    {transaction.platformFeeId}
+                    {transaction.platformFeeName}
                   </Link>
                 </td>
                 <td>
