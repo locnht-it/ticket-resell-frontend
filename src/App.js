@@ -15,6 +15,9 @@ import ProfileUpdate from "./components/profile/ProfileUpdate";
 import TransactionDetails from "./components/transaction/TransactionDetails";
 import PlatformFeeAddNew from "./components/platformfee/PlatformFeeAddNew";
 import PlatformFeeUpdate from "./components/platformfee/PlatformFeeUpdate";
+import UserAddNew from "./components/user/UserAddNew";
+import UserDetails from "./components/user/UserDetails";
+import TicketDetails from "./components/ticket/TicketDetails";
 
 function App() {
   return (
@@ -34,10 +37,13 @@ function App() {
           />
 
           <Route path="/user" element={<User />} />
+          <Route path="/user/save" element={<UserAddNew />} />
+          <Route path="/user/:id" element={<UserDetails />} />
 
           <Route path="/post" element={<Post />} />
 
           <Route path="/ticket" element={<Ticket />} />
+          <Route path="/ticket/:id" element={<TicketDetails />} />
 
           <Route path="/order" element={<Order />} />
 

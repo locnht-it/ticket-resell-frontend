@@ -35,16 +35,16 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     icon: <HiOutlineUsers />,
   },
   {
-    key: `post`,
-    label: `Post`,
-    path: `/post`,
-    icon: <HiOutlineAnnotation />,
-  },
-  {
     key: `ticket`,
     label: `Ticket`,
     path: `/ticket`,
     icon: <HiOutlineTicket />,
+  },
+  {
+    key: `post`,
+    label: `Post`,
+    path: `/post`,
+    icon: <HiOutlineAnnotation />,
   },
   {
     key: `order`,
