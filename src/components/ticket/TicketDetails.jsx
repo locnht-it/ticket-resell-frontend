@@ -86,14 +86,6 @@ const TicketDetails = () => {
           <p className="text-lg">{ticket.seller}</p>
         </div>
 
-        {/* Status */}
-        <div className="mb-4 border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">Status</label>
-          <p className="text-lg">
-            {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
-          </p>
-        </div>
-
         {/* Trạng thái ticket với chức năng cập nhật */}
         <div className="mb-4 border border-gray-300 p-3 rounded">
           <label className="block text-gray-700 font-bold mb-2">Status</label>

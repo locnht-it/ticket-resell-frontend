@@ -18,6 +18,7 @@ import PlatformFeeUpdate from "./components/platformfee/PlatformFeeUpdate";
 import UserAddNew from "./components/user/UserAddNew";
 import UserDetails from "./components/user/UserDetails";
 import TicketDetails from "./components/ticket/TicketDetails";
+import PostDetails from "./components/post/PostDetails";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/user/:id" element={<UserDetails />} />
 
           <Route path="/post" element={<Post />} />
+          <Route path="/post/:id" element={<PostDetails />} />
 
           <Route path="/ticket" element={<Ticket />} />
           <Route path="/ticket/:id" element={<TicketDetails />} />
