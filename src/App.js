@@ -20,6 +20,9 @@ import UserDetails from "./components/user/UserDetails";
 import TicketDetails from "./components/ticket/TicketDetails";
 import PostDetails from "./components/post/PostDetails";
 import OrderDetails from "./components/order/OrderDetails";
+import Category from "./components/category/Category";
+import CategoryAddNew from "./components/category/CategoryAddNew";
+import CategoryUpdate from "./components/category/CategoryUpdate";
 
 function App() {
   return (
@@ -52,6 +55,10 @@ function App() {
           <Route path="/order/:id" element={<OrderDetails />} />
 
           <Route path="/support" element={<Support />} />
+
+          <Route path="/category" element={<Category />} />
+          <Route path="/category/save" element={<CategoryAddNew />} />
+          <Route path="/category/update/:id" element={<CategoryUpdate />} />
 
           <Route path="profiles/:id" element={<ProfilePage />} />
           <Route path="profiles/edit/:id" element={<ProfileUpdate />} />

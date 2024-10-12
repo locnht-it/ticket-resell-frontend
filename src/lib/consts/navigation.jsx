@@ -7,7 +7,9 @@ import {
   HiOutlineAnnotation,
   HiOutlineTicket,
   HiOutlineCurrencyDollar,
+  HiOutlineCake,
 } from "react-icons/hi";
+import { TbCategory } from "react-icons/tb";
 
 export const DASHBOARD_SIDEBAR_LINKS = [
   {
@@ -51,6 +53,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     label: `Order`,
     path: `/order`,
     icon: <HiOutlineShoppingCart />,
+  },
+  {
+    key: `category`,
+    label: `Category`,
+    path: `/category`,
+    icon: <TbCategory />,
   },
 ];
 

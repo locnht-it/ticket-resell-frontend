@@ -5,17 +5,14 @@ const PlatformFeeUpdate = () => {
   const { id } = useParams(); // Lấy ID của supplier từ URL
   const navigate = useNavigate();
 
-  // State quản lý thông tin của supplier
   const [platfromFee, setPlatformFee] = useState({
     name: "",
     quantity: 0,
-    status: "Active", // Mặc định là Active
+    status: "Active",
   });
 
   useEffect(() => {
-    // Giả lập gọi API hoặc lấy dữ liệu từ server
     const fetchPlatformFee = async () => {
-      // Ví dụ data giả lập
       const data = {
         id,
         name: `Package 500`,
@@ -27,7 +24,6 @@ const PlatformFeeUpdate = () => {
     fetchPlatformFee();
   }, [id]);
 
-  // Xử lý khi form thay đổi
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPlatformFee({
@@ -36,10 +32,9 @@ const PlatformFeeUpdate = () => {
     });
   };
 
-  // Xử lý cập nhật supplier
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Gửi yêu cầu cập nhật đến server
+
     console.log("Updated Province:", platfromFee);
 
     navigate(`/platform-fee`);
@@ -51,7 +46,6 @@ const PlatformFeeUpdate = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {/* Tiêu đề Update Supplier ở giữa */}
       <h2 className="text-2xl font-bold text-center mb-6">
         Update Platform Fee
       </h2>
@@ -69,7 +63,7 @@ const PlatformFeeUpdate = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold">Name</label>
+          <label className="block text-gray-700 font-bold">Quantity</label>
           <input
             type="number"
             name="quantity"
