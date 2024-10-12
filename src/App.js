@@ -19,6 +19,7 @@ import UserAddNew from "./components/user/UserAddNew";
 import UserDetails from "./components/user/UserDetails";
 import TicketDetails from "./components/ticket/TicketDetails";
 import PostDetails from "./components/post/PostDetails";
+import OrderDetails from "./components/order/OrderDetails";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/ticket/:id" element={<TicketDetails />} />
 
           <Route path="/order" element={<Order />} />
+          <Route path="/order/:id" element={<OrderDetails />} />
 
           <Route path="/support" element={<Support />} />
 
