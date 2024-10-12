@@ -127,12 +127,8 @@ const Order = () => {
             {orderData.map((order) => (
               <tr>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="flex items-center">
-                    <div class="text-sm leading-5 text-gray-800">
-                      <Link to={`/order/${order.orderId}`}>
-                        {order.orderId}
-                      </Link>
-                    </div>
+                  <div class="text-sm leading-5 text-gray-800">
+                    <Link to={`/order/${order.orderId}`}>#{order.orderId}</Link>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">

@@ -97,12 +97,8 @@ const PlatformFee = () => {
             {platformFees.map((platformFee) => (
               <tr key={platformFee.id}>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="flex items-center">
-                    <div>
-                      <div class="text-sm leading-5 text-blue-500">
-                        <td>#{platformFee.id}</td>
-                      </div>
-                    </div>
+                  <div class="text-sm leading-5 text-blue-500">
+                    #{platformFee.id}
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">

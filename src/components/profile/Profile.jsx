@@ -29,7 +29,7 @@ const ProfilePage = () => {
   }, [id]);
 
   const handleUpdate = () => {
-    navigate(`/profiles/edit/${id}`);
+    navigate(`/profile/edit/${id}`);
   };
 
   const handleChangePassword = () => {

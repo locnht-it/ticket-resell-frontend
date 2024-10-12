@@ -90,14 +90,8 @@ const Ticket = () => {
             {ticketData.map((ticket) => (
               <tr>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="flex items-center">
-                    <div>
-                      <div class="text-sm leading-5 text-gray-800">
-                        <td>
-                          <Link to={`/ticket/${ticket.id}`}>#{ticket.id}</Link>
-                        </td>
-                      </div>
-                    </div>
+                  <div class="text-sm leading-5 text-gray-800">
+                    <Link to={`/ticket/${ticket.id}`}>#{ticket.id}</Link>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">

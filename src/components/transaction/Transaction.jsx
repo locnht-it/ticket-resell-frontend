@@ -60,7 +60,7 @@ const Transaction = () => {
         <table class="min-w-full">
           <thead>
             <tr>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
               <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
@@ -85,16 +85,10 @@ const Transaction = () => {
             {transactionData.map((transaction) => (
               <tr>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="flex items-center">
-                    <div>
-                      <div class="text-sm leading-5 text-gray-800">
-                        <td>
-                          <Link to={`/transaction/${transaction.id}`}>
-                            #{transaction.id}
-                          </Link>
-                        </td>
-                      </div>
-                    </div>
+                  <div class="text-sm leading-5 text-gray-800">
+                    <Link to={`/transaction/${transaction.id}`}>
+                      #{transaction.id}
+                    </Link>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">

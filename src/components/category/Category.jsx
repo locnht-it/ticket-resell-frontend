@@ -90,12 +90,8 @@ const Category = () => {
             {categories.map((category) => (
               <tr key={category.id}>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="flex items-center">
-                    <div>
-                      <div class="text-sm leading-5 text-blue-500">
-                        <td>#{category.id}</td>
-                      </div>
-                    </div>
+                  <div class="text-sm leading-5 text-blue-500">
+                    #{category.id}
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">

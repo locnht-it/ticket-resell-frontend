@@ -60,8 +60,8 @@ function App() {
           <Route path="/category/save" element={<CategoryAddNew />} />
           <Route path="/category/update/:id" element={<CategoryUpdate />} />
 
-          <Route path="profiles/:id" element={<ProfilePage />} />
-          <Route path="profiles/edit/:id" element={<ProfileUpdate />} />
+          <Route path="profile/:id" element={<ProfilePage />} />
+          <Route path="profile/edit/:id" element={<ProfileUpdate />} />
         </Route>
 
         <Route path="change-password" element={<ChangePassword />} />
