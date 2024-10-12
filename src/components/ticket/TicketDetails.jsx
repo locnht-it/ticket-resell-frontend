@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const TicketDetails = () => {
   const [ticket, setTicket] = useState(null);
@@ -20,6 +20,22 @@ const TicketDetails = () => {
       { url: "https://via.placeholder.com/150" },
       { url: "https://via.placeholder.com/150" },
       { url: "https://via.placeholder.com/150" },
+    ],
+    reviews: [
+      {
+        userId: 1,
+        reviewerName: "NamLee",
+        reviewDate: "2024-10-15",
+        rating: 5,
+        comment: "Uy tín",
+      },
+      {
+        userId: 2,
+        reviewerName: "Hieu Chu Nhat",
+        reviewDate: "2024-10-16",
+        rating: 4,
+        comment: "Ship hơi lâu",
+      },
     ],
   };
 
@@ -125,6 +141,42 @@ const TicketDetails = () => {
             <p>No images available</p>
           )}
         </div>
+      </div>
+
+      {/* Customer Reviews */}
+      <div className="mb-6 border border-gray-300 p-3 rounded">
+        <h2 className="text-xl font-bold mb-2">Buyer's Feedback</h2>
+        {ticket.reviews && ticket.reviews.length > 0 ? (
+          ticket.reviews.map((review, index) => (
+            <div
+              key={index}
+              className={`mb-4 border border-gray-200 p-2 rounded `}
+            >
+              <p className="font-semibold cursor-pointer text-blue-600">
+                <Link to={`/user/${review.userId}`}>{review.reviewerName}</Link>
+              </p>
+              <p className="text-gray-600">
+                {new Date(review.reviewDate).toLocaleDateString()}
+              </p>
+              <p className="text-yellow-500">
+                {"★".repeat(review.rating) + "☆".repeat(5 - review.rating)}
+              </p>
+              <p className="text-gray-700">{review.comment}</p>
+              {/* <button
+                className={`mt-2 px-4 py-1 rounded focus:outline-none ${
+                  review.isActive
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-gray-500 text-white hover:bg-gray-600"
+                }`}
+                onClick={() => handleToggleReviewStatus(index)}
+              >
+                {review.isActive ? "Inactive" : "Active"}
+              </button> */}
+            </div>
+          ))
+        ) : (
+          <p>No feedback available.</p>
+        )}
       </div>
 
       <div className="flex justify-between mt-6">
