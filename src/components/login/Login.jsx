@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../AuthContext";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { signIn } = useAuth();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const success = await signIn(email, password);
+    if (success) {
+      navigate("/");
+    }
+  };
+
   return (
     <div className="flex h-screen rounded-sm">
       <div className="flex-[3.5] flex bg-gray-100 relative rounded-sm">
@@ -18,13 +31,15 @@ const Login = () => {
         <h3 className="text-2xl font-semibold text-center mb-6">
           Admin System
         </h3>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
           <div>
             <label className="block font-semibold mb-1">Email:</label>
             <input
               type="email"
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Please enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -34,13 +49,14 @@ const Login = () => {
               type="password"
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Please enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
           <button
             type="submit"
             className="w-full p-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600"
-            onClick={() => navigate(`/`)}
           >
             Login
           </button>

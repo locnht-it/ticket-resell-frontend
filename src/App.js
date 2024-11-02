@@ -23,51 +23,96 @@ import OrderDetails from "./components/order/OrderDetails";
 import Category from "./components/category/Category";
 import CategoryAddNew from "./components/category/CategoryAddNew";
 import CategoryUpdate from "./components/category/CategoryUpdate";
+import { AuthProvider } from "./AuthContext";
+import RequireAuth from "./RequireAuth";
+import NoAccess from "./NoAccess";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            {/* Trang dùng chung cho cả admin và staff */}
+            <Route
+              index
+              element={
+                <RequireAuth>
+                  <Dashboard />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="profile/:id"
+              element={
+                <RequireAuth>
+                  <ProfilePage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="profile/edit/:id"
+              element={
+                <RequireAuth>
+                  <ProfileUpdate />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="support"
+              element={
+                <RequireAuth>
+                  <Support />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="change-password"
+              element={
+                <RequireAuth>
+                  <ChangePassword />
+                </RequireAuth>
+              }
+            />
+            <Route path="/no-access" element={<NoAccess />} />
 
-          <Route path="/transaction" element={<Transaction />} />
-          <Route path="/transaction/:id" element={<TransactionDetails />} />
+            {/* Trang dành riêng cho admin */}
+            <Route element={<RequireAuth allowedRoles={[1]} />}>
+              <Route path="/user" element={<User />} />
+              <Route path="/user/save" element={<UserAddNew />} />
+              <Route path="/user/:id" element={<UserDetails />} />
+            </Route>
 
-          <Route path="/platform-fee" element={<PlatformFee />} />
-          <Route path="/platform-fee/save" element={<PlatformFeeAddNew />} />
-          <Route
-            path="/platform-fee/update/:id"
-            element={<PlatformFeeUpdate />}
-          />
+            {/* Trang dành riêng cho staff */}
+            <Route element={<RequireAuth allowedRoles={[2]} />}>
+              <Route path="/transaction" element={<Transaction />} />
+              <Route path="/transaction/:id" element={<TransactionDetails />} />
+              <Route path="/platform-fee" element={<PlatformFee />} />
+              <Route
+                path="/platform-fee/save"
+                element={<PlatformFeeAddNew />}
+              />
+              <Route
+                path="/platform-fee/update/:id"
+                element={<PlatformFeeUpdate />}
+              />
+              <Route path="/post" element={<Post />} />
+              <Route path="/post/:id" element={<PostDetails />} />
+              <Route path="/ticket" element={<Ticket />} />
+              <Route path="/ticket/:id" element={<TicketDetails />} />
+              <Route path="/order" element={<Order />} />
+              <Route path="/order/:id" element={<OrderDetails />} />
+              <Route path="/category" element={<Category />} />
+              <Route path="/category/save" element={<CategoryAddNew />} />
+              <Route path="/category/update/:id" element={<CategoryUpdate />} />
+            </Route>
+          </Route>
 
-          <Route path="/user" element={<User />} />
-          <Route path="/user/save" element={<UserAddNew />} />
-          <Route path="/user/:id" element={<UserDetails />} />
-
-          <Route path="/post" element={<Post />} />
-          <Route path="/post/:id" element={<PostDetails />} />
-
-          <Route path="/ticket" element={<Ticket />} />
-          <Route path="/ticket/:id" element={<TicketDetails />} />
-
-          <Route path="/order" element={<Order />} />
-          <Route path="/order/:id" element={<OrderDetails />} />
-
-          <Route path="/support" element={<Support />} />
-
-          <Route path="/category" element={<Category />} />
-          <Route path="/category/save" element={<CategoryAddNew />} />
-          <Route path="/category/update/:id" element={<CategoryUpdate />} />
-
-          <Route path="profile/:id" element={<ProfilePage />} />
-          <Route path="profile/edit/:id" element={<ProfileUpdate />} />
-        </Route>
-
-        <Route path="change-password" element={<ChangePassword />} />
-        <Route path="login" element={<Login />} />
-      </Routes>
-    </Router>
+          {/* Trang đăng nhập */}
+          <Route path="login" element={<Login />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
