@@ -1,6 +1,6 @@
 import React from "react";
 import { AiOutlineTransaction } from "react-icons/ai";
-import { FaUser } from "react-icons/fa";
+import { BsFillFilePostFill } from "react-icons/bs";
 import { IoBagHandle } from "react-icons/io5";
 import { RiBillFill } from "react-icons/ri";
 
@@ -41,12 +41,10 @@ const DashboardStatsGrid = () => {
       </BoxWrapper>
       <BoxWrapper>
         <div className="rounded-full h-12 w-12 flex items-center justify-center bg-yellow-400">
-          <FaUser className="text-2xl text-white" />
+          <BsFillFilePostFill className="text-2xl text-white" />
         </div>
         <div className="pl-4">
-          <span className="text-sm text-gray-500 font-bold">
-            Total Customers
-          </span>
+          <span className="text-sm text-gray-500 font-bold">Total Posts</span>
           <div className="flex items-center">
             <strong className="text-xl text-gray-700 font-semibold">50</strong>
             <span className="text-sm text-green-500 pl-2 font-semibold">
