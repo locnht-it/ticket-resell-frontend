@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:5220/api/Authentication/sign-in",
+        "https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/sign-in",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

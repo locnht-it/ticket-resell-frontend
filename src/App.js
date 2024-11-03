@@ -52,6 +52,7 @@ function App() {
               <Route path="profile/edit/:id" element={<ProfileUpdate />} />
               <Route path="support" element={<Support />} />
               <Route path="change-password" element={<ChangePassword />} />
+              <Route path="no-access" element={<NoAccess />} />
 
               {/* Admin-specific routes */}
               <Route element={<RequireAuth allowedRoles={[1]} />}>
@@ -91,9 +92,6 @@ function App() {
               </Route>
             </Route>
           </Route>
-
-          {/* No access page */}
-          <Route path="no-access" element={<NoAccess />} />
         </Routes>
       </Router>
     </AuthProvider>
