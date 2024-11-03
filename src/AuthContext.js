@@ -7,11 +7,11 @@ export const AuthProvider = ({ children }) => {
     const savedAuth = localStorage.getItem("authData");
     return savedAuth
       ? JSON.parse(savedAuth)
-      : { isAuthenticated: false, user: null };
+      : { isAuthenticated: false, user: null, token: null, refreshToken: null };
   });
 
   const signIn = async (email, password) => {
-    const data = { email, password, fcmToken: null }; // Tạo dữ liệu cần gửi
+    const data = { email, password, fcmToken: "string" }; // Tạo dữ liệu cần gửi
     console.log(">>> Check data before call api signIn:", data); // Log dữ liệu ra console
 
     try {
@@ -26,11 +26,18 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const dataResponse = await response.json();
-        setAuth({ isAuthenticated: true, user: dataResponse.userDTO });
-        localStorage.setItem(
-          "authData",
-          JSON.stringify({ isAuthenticated: true, user: dataResponse.userDTO })
-        );
+
+        // Cập nhật auth state và lưu vào localStorage
+        const authData = {
+          isAuthenticated: true,
+          user: dataResponse.content.userDTO,
+          token: dataResponse.content.token,
+          refreshToken: dataResponse.content.refreshToken,
+        };
+
+        setAuth(authData);
+        localStorage.setItem("authData", JSON.stringify(authData));
+
         return true;
       } else {
         alert("Sai thông tin đăng nhập");
@@ -43,7 +50,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setAuth({ isAuthenticated: false, user: null });
+    setAuth({
+      isAuthenticated: false,
+      user: null,
+      token: null,
+      refreshToken: null,
+    });
     localStorage.removeItem("authData");
   };
 

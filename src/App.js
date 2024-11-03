@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Layout from "./components/shared/Layout";
 import Dashboard from "./components/dashboard/Dashboard";
 import Transaction from "./components/transaction/Transaction";
@@ -32,84 +37,63 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Layout />}>
-            {/* Trang dùng chung cho cả admin và staff */}
-            <Route
-              index
-              element={
-                <RequireAuth>
-                  <Dashboard />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="profile/:id"
-              element={
-                <RequireAuth>
-                  <ProfilePage />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="profile/edit/:id"
-              element={
-                <RequireAuth>
-                  <ProfileUpdate />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="support"
-              element={
-                <RequireAuth>
-                  <Support />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="change-password"
-              element={
-                <RequireAuth>
-                  <ChangePassword />
-                </RequireAuth>
-              }
-            />
-            <Route path="/no-access" element={<NoAccess />} />
+          {/* Login page */}
+          <Route path="login" element={<Login />} />
 
-            {/* Trang dành riêng cho admin */}
-            <Route element={<RequireAuth allowedRoles={[1]} />}>
-              <Route path="/user" element={<User />} />
-              <Route path="/user/save" element={<UserAddNew />} />
-              <Route path="/user/:id" element={<UserDetails />} />
-            </Route>
+          {/* Root path: Redirect to "/dashboard" */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-            {/* Trang dành riêng cho staff */}
-            <Route element={<RequireAuth allowedRoles={[2]} />}>
-              <Route path="/transaction" element={<Transaction />} />
-              <Route path="/transaction/:id" element={<TransactionDetails />} />
-              <Route path="/platform-fee" element={<PlatformFee />} />
-              <Route
-                path="/platform-fee/save"
-                element={<PlatformFeeAddNew />}
-              />
-              <Route
-                path="/platform-fee/update/:id"
-                element={<PlatformFeeUpdate />}
-              />
-              <Route path="/post" element={<Post />} />
-              <Route path="/post/:id" element={<PostDetails />} />
-              <Route path="/ticket" element={<Ticket />} />
-              <Route path="/ticket/:id" element={<TicketDetails />} />
-              <Route path="/order" element={<Order />} />
-              <Route path="/order/:id" element={<OrderDetails />} />
-              <Route path="/category" element={<Category />} />
-              <Route path="/category/save" element={<CategoryAddNew />} />
-              <Route path="/category/update/:id" element={<CategoryUpdate />} />
+          {/* Protected routes */}
+          <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
+            <Route path="/" element={<Layout />}>
+              {/* Shared routes for both admin and staff */}
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="profile/:id" element={<ProfilePage />} />
+              <Route path="profile/edit/:id" element={<ProfileUpdate />} />
+              <Route path="support" element={<Support />} />
+              <Route path="change-password" element={<ChangePassword />} />
+
+              {/* Admin-specific routes */}
+              <Route element={<RequireAuth allowedRoles={[1]} />}>
+                <Route path="user" element={<User />} />
+                <Route path="user/save" element={<UserAddNew />} />
+                <Route path="user/:id" element={<UserDetails />} />
+              </Route>
+
+              {/* Staff-specific routes */}
+              <Route element={<RequireAuth allowedRoles={[2]} />}>
+                <Route path="transaction" element={<Transaction />} />
+                <Route
+                  path="transaction/:id"
+                  element={<TransactionDetails />}
+                />
+                <Route path="platform-fee" element={<PlatformFee />} />
+                <Route
+                  path="platform-fee/save"
+                  element={<PlatformFeeAddNew />}
+                />
+                <Route
+                  path="platform-fee/update/:id"
+                  element={<PlatformFeeUpdate />}
+                />
+                <Route path="post" element={<Post />} />
+                <Route path="post/:id" element={<PostDetails />} />
+                <Route path="ticket" element={<Ticket />} />
+                <Route path="ticket/:id" element={<TicketDetails />} />
+                <Route path="order" element={<Order />} />
+                <Route path="order/:id" element={<OrderDetails />} />
+                <Route path="category" element={<Category />} />
+                <Route path="category/save" element={<CategoryAddNew />} />
+                <Route
+                  path="category/update/:id"
+                  element={<CategoryUpdate />}
+                />
+              </Route>
             </Route>
           </Route>
 
-          {/* Trang đăng nhập */}
-          <Route path="login" element={<Login />} />
+          {/* No access page */}
+          <Route path="no-access" element={<NoAccess />} />
         </Routes>
       </Router>
     </AuthProvider>

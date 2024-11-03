@@ -1,32 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-const fetchUserData = async (id) => {
-  return {
-    fullName: "Ngo Huynh Tan loc",
-    address: "Ho Chi Minh City",
-    email: "locnht.it@example.com",
-    phone: "0901234567",
-    role: "Admin",
-    dateOfBirth: "2003-11-23",
-    avatar:
-      "https://scontent.fsgn2-7.fna.fbcdn.net/v/t39.30808-6/378014342_1996203014082143_1181191835414672378_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=eU22345q1bEQ7kNvgFhHzdL&_nc_ht=scontent.fsgn2-7.fna&_nc_gid=AQOREiXq4t1NgtD7S31-dMa&oh=00_AYBWWuhtEwOJwsRI2CyMGhBt9twXMbX_pTf3I-YerXEBFQ&oe=6705890A", // Thay thế bằng URL hình ảnh thực tế
-    gender: "Male",
-  };
-};
+import { useAuth } from "../../AuthContext";
+import getUserRole from "../../lib/utils/UserRole";
 
 const ProfilePage = () => {
   const { id } = useParams();
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   useEffect(() => {
     const loadUserData = async () => {
-      const data = await fetchUserData(id);
+      const data = await auth.user;
       setUserData(data);
     };
     loadUserData();
-  }, [id]);
+  }, [id, auth.user]);
 
   const handleUpdate = () => {
     navigate(`/profile/edit/${id}`);
@@ -49,6 +38,18 @@ const ProfilePage = () => {
     );
   }
 
+  // Xác định role và gender hiển thị
+  const displayRole =
+    userData.role === 1 ? "Admin" : userData.role === 2 ? "Staff" : "Unknown";
+  const displayGender =
+    userData.gender === 0
+      ? "Male"
+      : userData.gender === 1
+      ? "Female"
+      : userData.gender === 2
+      ? "Other"
+      : "Unknown";
+
   return (
     <div className="flex items-center justify-center p-10 bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full">
@@ -57,15 +58,15 @@ const ProfilePage = () => {
         </h1>
         <div className="flex items-center mb-6">
           <img
-            src={userData.avatar}
+            src={userData.image}
             alt="Avatar"
             className="w-32 h-32 rounded-full border border-gray-300"
           />
           <div className="ml-4">
-            <h2 className="text-xl font-semibold text-gray-800">
-              {userData.fullName}
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              {userData.fullname}
             </h2>
-            <p className="text-gray-600">{userData.role}</p>
+            <p className="text-gray-600">{getUserRole(displayRole)}</p>
           </div>
         </div>
         <div className="mb-4">
@@ -74,19 +75,15 @@ const ProfilePage = () => {
         </div>
         <div className="mb-4">
           <strong className="text-gray-800">Phone:</strong>
-          <p className="text-gray-600">{userData.phone}</p>
+          <p className="text-gray-600">{userData.phoneNumber}</p>
         </div>
         <div className="mb-4">
           <strong className="text-gray-800">Address:</strong>
           <p className="text-gray-600">{userData.address}</p>
         </div>
         <div className="mb-4">
-          <strong className="text-gray-800">Date of Birth:</strong>
-          <p className="text-gray-600">{userData.dateOfBirth}</p>
-        </div>
-        <div className="mb-4">
           <strong className="text-gray-800">Gender:</strong>
-          <p className="text-gray-600">{userData.gender}</p>
+          <p className="text-gray-600">{displayGender}</p>
         </div>
         <div className="flex justify-center mb-4">
           <button
