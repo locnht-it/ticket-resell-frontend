@@ -8,15 +8,9 @@ const getTicketStatus = (status) => {
           {status.replaceAll(`_`, ` `).toLowerCase()}
         </span>
       );
-    case `VERIFIED`:
+    case `ACTIVE`:
       return (
         <span className="capitalize py-1 px-2 rounded-sm text-xs text-green-600 bg-green-100">
-          {status.replaceAll(`_`, ` `).toLowerCase()}
-        </span>
-      );
-    case `REJECTED`:
-      return (
-        <span className="capitalize py-1 px-2 rounded-sm text-xs text-orange-600 bg-orange-100">
           {status.replaceAll(`_`, ` `).toLowerCase()}
         </span>
       );

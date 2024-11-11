@@ -9,9 +9,10 @@ import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { signIn } = useAuth();
+  const { auth } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,9 +28,21 @@ const Login = () => {
       return;
     }
 
-    // Attempt to sign in
     const success = await signIn(email, password);
     if (success) {
+      // Lấy thông tin người dùng từ localStorage
+      const authData = JSON.parse(localStorage.getItem("authData"));
+
+      if (
+        authData &&
+        authData.user &&
+        authData.user.role !== 1 &&
+        authData.user.role !== 2
+      ) {
+        toast.error("You do not have permission to access.");
+        return;
+      }
+
       toast.success("Login successful!");
       navigate("/dashboard");
     } else {
