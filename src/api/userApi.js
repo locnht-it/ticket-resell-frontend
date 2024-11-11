@@ -23,5 +23,15 @@ export const useUserApi = () => {
     );
   };
 
-  return { editProfile };
+  const getAllUsers = async (page, limit) => {
+    return await axios.get(REST_API_BASE_URL + "/User/get-all-user", {
+      params: {
+        page: page,
+        limit: limit,
+      },
+      headers: headers,
+    });
+  };
+
+  return { editProfile, getAllUsers };
 };

@@ -46,7 +46,7 @@ const Login = () => {
       toast.success("Login successful!");
       navigate("/dashboard");
     } else {
-      toast.error("Login failed. Please check your email or password.");
+      toast.error("Login failed.");
     }
   };
 

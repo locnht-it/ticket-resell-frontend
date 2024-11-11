@@ -14,7 +14,7 @@ const ProfileUpdate = () => {
   const [image, setImage] = useState("");
   const [errors, setErrors] = useState({});
   const { auth } = useAuth();
-  const { editProfile } = useUserApi(); // Sử dụng custom hook
+  const { editProfile } = useUserApi();
 
   useEffect(() => {
     const storedUserDetails = auth.user;
