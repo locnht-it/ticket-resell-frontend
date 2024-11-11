@@ -4,7 +4,7 @@ import { v4 } from "uuid";
 import { toast } from "react-toastify";
 import { useAuth } from "../../AuthContext";
 import { storage } from "../../lib/firebase/Firebase";
-import { useUserApi } from "../../api/userApi"; // Import custom hook
+import { useUserApi } from "../../api/userApi";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const ProfileUpdate = () => {

@@ -1,26 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUserApi } from "../../api/userApi";
+import getUserRole from "../../lib/utils/UserRole";
+import getUserStatus from "../../lib/utils/UserStatus";
 
-const UserDetails = ({ accountId }) => {
+const UserDetails = () => {
+  const { id } = useParams();
   const [account, setAccount] = useState(null);
   const navigate = useNavigate();
-
-  const accountData = {
-    id: 1,
-    image: "https://via.placeholder.com/150",
-    fullName: "Vo Van Tinh",
-    address: "Thu Duc City",
-    email: "tinhvo@example.com",
-    phoneNumber: "123-456-7890",
-    postTimes: 10,
-    point: 10,
-    role: "CUSTOMER",
-    status: "Active",
-  };
+  const { getUserByUserId } = useUserApi();
 
   useEffect(() => {
-    setAccount(accountData);
-  }, [accountId]);
+    const fetchUserDetails = async () => {
+      try {
+        const response = await getUserByUserId(id);
+        console.log(`>>> Chẹc response from api getUserByUserId: `, response);
+        if (response && response.data.content) {
+          const user = response.data.content;
+          const status = user.isDelete === true ? "Inactive" : "Active";
+          setAccount({ ...user, status });
+        } else {
+          console.error("No user data found!");
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    if (id) {
+      fetchUserDetails();
+    }
+  }, [id]);
 
   const handleToggleStatus = () => {
     const newStatus = account.status === "active" ? "inactive" : "active";
@@ -35,6 +45,7 @@ const UserDetails = ({ accountId }) => {
   if (!account) {
     return <div>Loading...</div>;
   }
+
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
       <h1 className="text-3xl font-bold text-center mb-6">Account Details</h1>
@@ -55,12 +66,12 @@ const UserDetails = ({ accountId }) => {
             <label className="block text-gray-700 font-bold mb-1">
               Full Name
             </label>
-            <p className="text-lg">{account.fullName}</p>
+            <p className="text-lg">{account.fullname}</p>
           </div>
 
           <div className=" p-3 rounded">
             <label className="block text-gray-700 font-bold mb-2">Role</label>
-            <p className="text-lg">{account.role}</p>
+            <p className="text-lg">{getUserRole(account.role)}</p>
           </div>
         </div>
       </div>
@@ -101,9 +112,7 @@ const UserDetails = ({ accountId }) => {
         </div>
         <div className="border border-gray-300 p-3 rounded">
           <label className="block text-gray-700 font-bold mb-2">Status</label>
-          <p className="text-lg">
-            {account.status.charAt(0).toUpperCase() + account.status.slice(1)}
-          </p>
+          <p className="text-lg">{getUserStatus(account.status)}</p>
         </div>
       </div>
 
@@ -111,19 +120,19 @@ const UserDetails = ({ accountId }) => {
       <div className="flex justify-between mt-6">
         <button
           className="px-6 py-2 rounded bg-gray-500 text-white hover:bg-gray-600 focus:outline-none"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/user")}
         >
           Back
         </button>
         <button
           className={`px-6 py-2 rounded ${
-            account.status === "active"
+            account.status === "Active"
               ? "bg-red-500 text-white hover:bg-red-600"
               : "bg-green-500 text-white hover:bg-green-600"
           } focus:outline-none`}
           onClick={handleToggleStatus}
         >
-          {account.status === "active" ? "Inactive" : "Active"}
+          {account.status === "Active" ? "Inactive" : "Active"}
         </button>
       </div>
     </div>

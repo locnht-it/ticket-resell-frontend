@@ -37,10 +37,6 @@ const ProfilePage = () => {
       </div>
     );
   }
-
-  // Xác định role và gender hiển thị
-  const displayRole =
-    userData.role === 1 ? "Admin" : userData.role === 2 ? "Staff" : "Unknown";
   const displayGender =
     userData.gender === 0
       ? "Male"
@@ -66,7 +62,7 @@ const ProfilePage = () => {
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               {userData.fullname}
             </h2>
-            <p className="text-gray-600">{getUserRole(displayRole)}</p>
+            <p className="text-gray-600">{getUserRole(userData.role)}</p>
           </div>
         </div>
         <div className="mb-4">

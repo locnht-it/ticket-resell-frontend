@@ -33,5 +33,24 @@ export const useUserApi = () => {
     });
   };
 
-  return { editProfile, getAllUsers };
+  const createStaffUser = async (user) => {
+    return await axios.post(
+      REST_API_BASE_URL + "/Authentication/sign-up-for-staff",
+      user,
+      {
+        headers: headers,
+      }
+    );
+  };
+
+  const getUserByUserId = async (id) => {
+    return await axios.get(REST_API_BASE_URL + "/User/get-user-by-id", {
+      params: {
+        id: id,
+      },
+      headers: headers,
+    });
+  };
+
+  return { editProfile, getAllUsers, createStaffUser, getUserByUserId };
 };
