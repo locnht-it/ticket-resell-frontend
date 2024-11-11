@@ -56,20 +56,6 @@ const UserAddNew = () => {
     return phoneRegex.test(phoneNumber);
   };
 
-  const handleGenderChange = (e) => {
-    const selectedGender = parseInt(e.target.value);
-    setGender(selectedGender);
-
-    // Xóa lỗi khi người dùng chọn giới tính
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
-      if (selectedGender !== "") {
-        delete newErrors.gender;
-      }
-      return newErrors;
-    });
-  };
-
   // Handle input change with live validation
   const handleInputChange = (field, value) => {
     let newErrors = { ...errors };
@@ -108,6 +94,13 @@ const UserAddNew = () => {
         newErrors.password =
           "Password must be at least 9 characters and include 1 uppercase, 1 number, and 1 special character.";
       else delete newErrors.password;
+    }
+
+    if (field === "gender") {
+      const selectedGender = parseInt(value);
+      setGender(selectedGender);
+      if (!value.trim()) newErrors.gender = "Gender is required.";
+      else delete newErrors.gender;
     }
 
     setErrors(newErrors);
@@ -150,11 +143,27 @@ const UserAddNew = () => {
     };
 
     createStaffUser(accountData)
-      .then(() => {
+      .then((response) => {
+        if (response.data.statusCode !== 201) {
+          toast.error(
+            response.data.message ||
+              "Failed to create user. Please check your input."
+          );
+          return;
+        }
         toast.success("Account has been created successfully!");
         navigate("/user");
       })
-      .catch((error) => console.error("Error creating user:", error));
+      .catch((error) => {
+        if (error.response && error.response.data) {
+          const errorMessage =
+            error.response.data.message || "An unexpected error occurred.";
+          toast.error(errorMessage);
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
+        console.error("Error creating user:", error);
+      });
   };
 
   return (
@@ -268,7 +277,7 @@ const UserAddNew = () => {
           <label className="block text-gray-700 font-medium mb-2">Gender</label>
           <select
             value={gender}
-            onChange={handleGenderChange}
+            onChange={(e) => handleInputChange("gender", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
           >
             <option value="">Select Gender</option>

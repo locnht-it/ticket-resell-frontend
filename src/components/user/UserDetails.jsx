@@ -3,22 +3,31 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUserApi } from "../../api/userApi";
 import getUserRole from "../../lib/utils/UserRole";
 import getUserStatus from "../../lib/utils/UserStatus";
+import { toast, ToastContainer } from "react-toastify";
 
 const UserDetails = () => {
   const { id } = useParams();
   const [account, setAccount] = useState(null);
   const navigate = useNavigate();
-  const { getUserByUserId } = useUserApi();
+  const { getUserByUserId, changeUserStatus } = useUserApi();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const response = await getUserByUserId(id);
-        console.log(`>>> Chẹc response from api getUserByUserId: `, response);
+        console.log(`>>> Check response from api getUserByUserId: `, response);
         if (response && response.data.content) {
           const user = response.data.content;
-          const status = user.isDelete === true ? "Inactive" : "Active";
-          setAccount({ ...user, status });
+          const status = user.isDeleted === true ? "Inactive" : "Active";
+          const gender =
+            user.gender === 0
+              ? "Male"
+              : user.gender === 1
+              ? "Female"
+              : user.gender === 2
+              ? "Other"
+              : "Unknown";
+          setAccount({ ...user, status, gender });
         } else {
           console.error("No user data found!");
         }
@@ -32,14 +41,20 @@ const UserDetails = () => {
     }
   }, [id]);
 
-  const handleToggleStatus = () => {
-    const newStatus = account.status === "active" ? "inactive" : "active";
-    setAccount({ ...account, status: newStatus });
-    alert(
-      `Account status has been updated to ${
-        newStatus.charAt(0).toUpperCase() + newStatus.slice(1)
-      }!`
-    );
+  const handleToggleStatus = async () => {
+    try {
+      const newStatus = account.status === "Active" ? "Inactive" : "Active";
+      const response = await changeUserStatus(id);
+      if (response && response.data.content) {
+        setAccount({ ...account, status: newStatus });
+        toast.success("Change status successfully!");
+      } else {
+        toast.error("Error updating user status.");
+      }
+    } catch (error) {
+      console.error("Error toggling user status:", error);
+      toast.error("Error toggling user status.");
+    }
   };
 
   if (!account) {
@@ -47,93 +62,72 @@ const UserDetails = () => {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-bold text-center mb-6">Account Details</h1>
-
-      <div className="grid grid-cols-3 items-center gap-4 mb-6">
-        {/* Avatar */}
-        <div className="text-center">
+    <div className="flex items-center justify-center p-1 bg-gray-100">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4 text-center">
+          Account Details
+        </h1>
+        <div className="flex items-center mb-6">
           <img
             src={account.image}
             alt="Avatar"
-            className="w-32 h-32 object-cover rounded-full mx-auto"
+            className="w-32 h-32 rounded-full border border-gray-300"
           />
-        </div>
-
-        {/* Full Name and Role */}
-        <div className="col-span-2">
-          <div className="pt-3 pl-4 rounded mb-2">
-            <label className="block text-gray-700 font-bold mb-1">
-              Full Name
-            </label>
-            <p className="text-lg">{account.fullname}</p>
-          </div>
-
-          <div className=" p-3 rounded">
-            <label className="block text-gray-700 font-bold mb-2">Role</label>
-            <p className="text-lg">{getUserRole(account.role)}</p>
+          <div className="ml-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              {account.fullname}
+            </h2>
+            <p className="text-gray-600">{getUserRole(account.role)}</p>
           </div>
         </div>
-      </div>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Address:</strong>
+          <p className="text-gray-600">{account.address}</p>
+        </div>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Email:</strong>
+          <p className="text-gray-600">{account.email}</p>
+        </div>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Phone Number:</strong>
+          <p className="text-gray-600">{account.phoneNumber}</p>
+        </div>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Point:</strong>
+          <p className="text-gray-600">{account.point}</p>
+        </div>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Post Times:</strong>
+          <p className="text-gray-600">{account.postTimes}</p>
+        </div>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Gender:</strong>
+          <p className="text-gray-600">{account.gender}</p>
+        </div>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Status:</strong>
+          <p className="text-gray-600">{getUserStatus(account.status)}</p>
+        </div>
 
-      {/* Address and Email in one row */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">Address</label>
-          <p className="text-lg">{account.address}</p>
+        {/* Buttons */}
+        <div className="flex justify-between mt-6">
+          <button
+            className="px-6 py-2 rounded bg-gray-500 text-white hover:bg-gray-600 focus:outline-none"
+            onClick={() => navigate("/user")}
+          >
+            Back
+          </button>
+          <button
+            className={`px-6 py-2 rounded ${
+              account.status === "Active"
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-green-500 text-white hover:bg-green-600"
+            } focus:outline-none`}
+            onClick={handleToggleStatus}
+          >
+            {account.status === "Active" ? "Inactive" : "Active"}
+          </button>
         </div>
-        <div className="border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">Email</label>
-          <p className="text-lg">{account.email}</p>
-        </div>
-      </div>
-
-      {/* Phone and Point in one row */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">
-            Phone Number
-          </label>
-          <p className="text-lg">{account.phoneNumber}</p>
-        </div>
-        <div className="border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">Point</label>
-          <p className="text-lg">{account.point}</p>
-        </div>
-      </div>
-
-      {/* Post Times and Status in one row */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">
-            Post Times
-          </label>
-          <p className="text-lg">{account.postTimes}</p>
-        </div>
-        <div className="border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">Status</label>
-          <p className="text-lg">{getUserStatus(account.status)}</p>
-        </div>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex justify-between mt-6">
-        <button
-          className="px-6 py-2 rounded bg-gray-500 text-white hover:bg-gray-600 focus:outline-none"
-          onClick={() => navigate("/user")}
-        >
-          Back
-        </button>
-        <button
-          className={`px-6 py-2 rounded ${
-            account.status === "Active"
-              ? "bg-red-500 text-white hover:bg-red-600"
-              : "bg-green-500 text-white hover:bg-green-600"
-          } focus:outline-none`}
-          onClick={handleToggleStatus}
-        >
-          {account.status === "Active" ? "Inactive" : "Active"}
-        </button>
       </div>
     </div>
   );

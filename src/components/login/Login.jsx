@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
@@ -105,7 +105,6 @@ const Login = () => {
           </button>
         </form>
       </div>
-      <ToastContainer />
     </div>
   );
 };

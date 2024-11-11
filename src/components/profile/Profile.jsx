@@ -47,7 +47,7 @@ const ProfilePage = () => {
       : "Unknown";
 
   return (
-    <div className="flex items-center justify-center p-10 bg-gray-100">
+    <div className="flex items-center justify-center p-1 bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full">
         <h1 className="text-4xl font-bold text-gray-800 mb-4 text-center">
           Profile Information
@@ -65,20 +65,20 @@ const ProfilePage = () => {
             <p className="text-gray-600">{getUserRole(userData.role)}</p>
           </div>
         </div>
-        <div className="mb-4">
-          <strong className="text-gray-800">Email:</strong>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Email:</strong>
           <p className="text-gray-600">{userData.email}</p>
         </div>
-        <div className="mb-4">
-          <strong className="text-gray-800">Phone:</strong>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Phone:</strong>
           <p className="text-gray-600">{userData.phoneNumber}</p>
         </div>
-        <div className="mb-4">
-          <strong className="text-gray-800">Address:</strong>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Address:</strong>
           <p className="text-gray-600">{userData.address}</p>
         </div>
-        <div className="mb-4">
-          <strong className="text-gray-800">Gender:</strong>
+        <div className="mb-4 flex items-center">
+          <strong className="text-gray-800 mr-2">Gender:</strong>
           <p className="text-gray-600">{displayGender}</p>
         </div>
         <div className="flex justify-center mb-4">

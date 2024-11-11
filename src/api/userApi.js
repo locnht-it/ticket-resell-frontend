@@ -52,5 +52,40 @@ export const useUserApi = () => {
     });
   };
 
-  return { editProfile, getAllUsers, createStaffUser, getUserByUserId };
+  const changeUserStatus = async (id) => {
+    return await axios.get(REST_API_BASE_URL + "/User/change-active", {
+      params: {
+        id: id,
+      },
+      headers: headers,
+    });
+  };
+
+  const searchUserByNameAndEmail = async (search) => {
+    return await axios.get(REST_API_BASE_URL + "/User/search", {
+      params: {
+        search: search,
+      },
+      headers: headers,
+    });
+  };
+
+  const getUsersByRole = async (role) => {
+    return await axios.get(REST_API_BASE_URL + "/User/get-all-user-by-role", {
+      params: {
+        role: role,
+      },
+      headers: headers,
+    });
+  };
+
+  return {
+    editProfile,
+    getAllUsers,
+    createStaffUser,
+    getUserByUserId,
+    changeUserStatus,
+    searchUserByNameAndEmail,
+    getUsersByRole,
+  };
 };
