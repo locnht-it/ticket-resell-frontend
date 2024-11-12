@@ -19,15 +19,15 @@ const UserDetails = () => {
         if (response && response.data.content) {
           const user = response.data.content;
           const status = user.isDeleted === true ? "Inactive" : "Active";
-          const gender =
-            user.gender === 0
-              ? "Male"
-              : user.gender === 1
-              ? "Female"
-              : user.gender === 2
-              ? "Other"
-              : "Unknown";
-          setAccount({ ...user, status, gender });
+          // const gender =
+          //   user.gender === 0
+          //     ? "Male"
+          //     : user.gender === 1
+          //     ? "Female"
+          //     : user.gender === 2
+          //     ? "Other"
+          //     : "Unknown";
+          setAccount({ ...user, status });
         } else {
           console.error("No user data found!");
         }

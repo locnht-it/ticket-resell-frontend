@@ -1,39 +1,59 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import getPlatformFeeStatus from "../../lib/utils/PlatformFeeStatus";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { HiOutlineSearch } from "react-icons/hi";
+import { useCategoryApi } from "../../api/categoryApi";
 import getCategoryStatus from "../../lib/utils/CategoryStatus";
 
-const categoryData = [
-  {
-    id: 1,
-    name: `Ve xe khach`,
-    status: `Active`,
-  },
-  {
-    id: 2,
-    name: `Ve tau lua`,
-    status: `Active`,
-  },
-  {
-    id: 3,
-    name: `Ve may bay`,
-    status: `Inactive`,
-  },
-  {
-    id: 4,
-    name: `Ve concert`,
-    status: `Inactive`,
-  },
-  {
-    id: 5,
-    name: `Ve xem phim`,
-    status: `Active`,
-  },
-];
-
 const Category = () => {
-  const [categories, setCategories] = useState(categoryData);
+  const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
+  const { getAllCategories } = useCategoryApi();
+
+  const fetchCategories = async () => {
+    try {
+      const response = await getAllCategories(searchTerm, page, limit);
+
+      const data = response.data.content || [];
+
+      console.log(`>>> Check data response of API getAllCategories: `, data);
+
+      if (Array.isArray(data)) {
+        const updatedCategories = data.map((category) => ({
+          ...category,
+          status: category.isDeleted === false ? "Active" : "Inactive",
+        }));
+
+        setCategories(updatedCategories);
+      } else {
+        console.error("Dữ liệu không phải là mảng.");
+      }
+
+      const totalItems = response.data.size || 0;
+      const calculatedTotalPages = Math.ceil(totalItems / limit);
+      setTotalPages(calculatedTotalPages);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [page, searchTerm]);
+
+  const handleSearch = () => {
+    setPage(1);
+    fetchCategories();
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   const handleCategoryAddNew = () => {
     navigate("/category/save");
@@ -43,165 +63,129 @@ const Category = () => {
     navigate(`/category/update/${id}`);
   };
 
-  const handleToggleStatus = (id) => {
-    setCategories((prevCategoryFees) =>
-      prevCategoryFees.map((category) =>
-        category.id === id
-          ? {
-              ...category,
-              status: category.status === "Active" ? "Inactive" : "Active",
-            }
-          : category
-      )
-    );
-  };
-
   return (
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg">
+    <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
+      <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg">
         <strong className="text-gray-700 font-medium text-4xl text-center block pb-7">
           Category Management
         </strong>
-        <div class="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 work-sans pb-5">
+        <div className="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 pb-5">
+          <div className="relative w-[24rem]">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="text-sm focus:outline-none active:outline-none h-10 w-full border border-gray-300 rounded-sm pl-4 pr-10"
+            />
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={handleSearch}
+            />
+          </div>
           <button
-            class="px-10 py-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none ml-auto font-bold"
+            className="px-10 py-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none ml-auto font-bold"
             onClick={handleCategoryAddNew}
           >
             Add New Category
           </button>
         </div>
-        <table class="min-w-full">
+        <table className="min-w-full">
           <thead>
             <tr>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
                 Name
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
                 Status
               </th>
-              <th class="px-2 py-3 border-b-2 border-gray-300"></th>
-              <th class="px-2 py-3 border-b-2 border-gray-300"></th>
+              <th className="px-2 py-3 border-b-2 border-gray-300"></th>
             </tr>
           </thead>
-          <tbody class="bg-white">
+          <tbody className="bg-white">
             {categories.map((category) => (
               <tr key={category.id}>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-500">
-                    #{category.id}
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
+                  <div className="text-sm leading-5 text-gray-800">
+                    <Link to={`/category/${category.id}`}>#{category.id}</Link>
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
+                  <div className="text-sm leading-5 text-blue-900">
                     {category.name}
                   </div>
                 </td>
-
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
                   {getCategoryStatus(category.status)}
                 </td>
-                <td class="px-2 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                   <button
-                    class={`px-2 py-2 border ${
-                      category.status === "Active"
-                        ? "border-red-500 text-red-500 hover:bg-red-700"
-                        : "border-green-500 text-green-500 hover:bg-green-700"
-                    } rounded transition duration-300 hover:text-white focus:outline-none`}
-                    onClick={() => handleToggleStatus(category.id)}
+                    className="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+                    onClick={() => handleCategoryUpdate(category.id)}
                   >
-                    {category.status === "Active"
-                      ? "Set Inactive"
-                      : "Set Active"}
+                    Update
                   </button>
-                </td>
-                <td class="px-2 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                  <div class="flex justify-end space-x-2">
-                    <button
-                      class="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-                      onClick={() => handleCategoryUpdate(category.id)}
-                    >
-                      Update
-                    </button>
-                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div class="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 work-sans pb-3">
-          {/* <div>
-            <p class="text-sm leading-5 text-blue-700">
-              Showing
-              <span class="font-medium">1</span>
-              to
-              <span class="font-medium">200</span>
-              of
-              <span class="font-medium">2000</span>
-              results
-            </p>
-          </div> */}
-          <div class="ml-auto">
-            <nav class="relative z-0 inline-flex shadow-sm">
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-                  aria-label="Previous"
+        <div className="ml-auto mt-5 flex justify-end">
+          {totalPages > 0 && (
+            <nav className="relative z-0 inline-flex shadow-sm -space-x-px">
+              {/* Previous button */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page - 1);
+                }}
+                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                  page === 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+                disabled={page === 1}
+              >
+                &lt;
+              </button>
+              {/* Page numbers */}
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(index + 1);
+                  }}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
+                    page === index + 1
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-500 hover:text-gray-700"
+                  }`}
                 >
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </div>
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-700 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  1
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-600 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  2
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-600 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  3
-                </a>
-              </div>
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-                  aria-label="Next"
-                >
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10l-3.293-3.293a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </div>
+                  {index + 1}
+                </button>
+              ))}
+              {/* Next button */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page + 1);
+                }}
+                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                  page === totalPages
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+                disabled={page === totalPages}
+              >
+                &gt;
+              </button>
             </nav>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@ const UserAddNew = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [gender, setGender] = useState(null);
+  const [gender, setGender] = useState(0);
   const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
@@ -99,7 +99,7 @@ const UserAddNew = () => {
     if (field === "gender") {
       const selectedGender = parseInt(value);
       setGender(selectedGender);
-      if (!value.trim()) newErrors.gender = "Gender is required.";
+      if (value === null) newErrors.gender = "Gender is required.";
       else delete newErrors.gender;
     }
 
@@ -118,7 +118,6 @@ const UserAddNew = () => {
       newErrors.phoneNumber = "Phone number is required.";
     if (!isValidPhoneNumber(phoneNumber))
       newErrors.phoneNumber = "Phone number must be exactly 10 digits.";
-    if (!gender) newErrors.gender = "Please select a gender.";
     if (!password) newErrors.password = "Password is required.";
     if (!isValidPassword(password))
       newErrors.password =
@@ -280,7 +279,6 @@ const UserAddNew = () => {
             onChange={(e) => handleInputChange("gender", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
           >
-            <option value="">Select Gender</option>
             <option value="0">Male</option>
             <option value="1">Female</option>
             <option value="2">Other</option>

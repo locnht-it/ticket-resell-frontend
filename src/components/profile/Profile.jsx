@@ -46,6 +46,15 @@ const ProfilePage = () => {
       ? "Other"
       : "Unknown";
 
+  const displayRole =
+    userData.role === 1
+      ? "ADMIN"
+      : userData.role === 2
+      ? "STAFF"
+      : userData.role === 0
+      ? "CUSTOMER"
+      : "Unknown";
+
   return (
     <div className="flex items-center justify-center p-1 bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full">
@@ -62,7 +71,7 @@ const ProfilePage = () => {
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               {userData.fullname}
             </h2>
-            <p className="text-gray-600">{getUserRole(userData.role)}</p>
+            <p className="text-gray-600">{getUserRole(displayRole)}</p>
           </div>
         </div>
         <div className="mb-4 flex items-center">

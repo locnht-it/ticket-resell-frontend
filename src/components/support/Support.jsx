@@ -16,7 +16,7 @@ const Support = () => {
             href="mailto:tripwonder@example.com"
             className="text-blue-500 underline"
           >
-            ticket-resell@example.com
+            locnht.it@gmail.com
           </a>
         </div>
       </div>

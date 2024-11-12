@@ -2,19 +2,19 @@ import React from "react";
 
 const getUserRole = (role) => {
   switch (role) {
-    case 1:
+    case "ADMIN":
       return (
         <span className="capitalize py-1 px-2 rounded-sm text-xs text-sky-600 bg-sky-100">
           ADMIN
         </span>
       );
-    case 2:
+    case "STAFF":
       return (
         <span className="capitalize py-1 px-2 rounded-sm text-xs text-teal-600 bg-teal-100">
           STAFF
         </span>
       );
-    case 0:
+    case "CUSTOMER":
       return (
         <span className="capitalize py-1 px-2 rounded-sm text-xs text-yellow-600 bg-yellow-100">
           CUSTOMER
