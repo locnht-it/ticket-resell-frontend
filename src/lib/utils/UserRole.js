@@ -8,13 +8,32 @@ const getUserRole = (role) => {
           ADMIN
         </span>
       );
+    case "ADMIN":
+      return (
+        <span className="capitalize py-1 px-2 rounded-sm text-xs text-sky-600 bg-sky-100">
+          ADMIN
+        </span>
+      );
     case 2:
       return (
         <span className="capitalize py-1 px-2 rounded-sm text-xs text-teal-600 bg-teal-100">
           STAFF
         </span>
       );
+    case "STAFF":
+      return (
+        <span className="capitalize py-1 px-2 rounded-sm text-xs text-teal-600 bg-teal-100">
+          STAFF
+        </span>
+      );
+
     case 0:
+      return (
+        <span className="capitalize py-1 px-2 rounded-sm text-xs text-yellow-600 bg-yellow-100">
+          CUSTOMER
+        </span>
+      );
+    case "CUSTOMER":
       return (
         <span className="capitalize py-1 px-2 rounded-sm text-xs text-yellow-600 bg-yellow-100">
           CUSTOMER

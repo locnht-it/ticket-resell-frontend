@@ -44,7 +44,9 @@ function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
           {/* Protected routes */}
-          <Route element={<RequireAuth allowedRoles={[1, 2]} />}>
+          <Route
+            element={<RequireAuth allowedRoles={[1, 2, "ADMIN", "STAFF"]} />}
+          >
             <Route path="/" element={<Layout />}>
               {/* Shared routes for both admin and staff */}
               <Route path="dashboard" element={<Dashboard />} />
@@ -53,16 +55,16 @@ function App() {
               <Route path="support" element={<Support />} />
               <Route path="change-password" element={<ChangePassword />} />
               <Route path="no-access" element={<NoAccess />} />
+              <Route path="user/:id" element={<UserDetails />} />
 
               {/* Admin-specific routes */}
-              <Route element={<RequireAuth allowedRoles={[1]} />}>
+              <Route element={<RequireAuth allowedRoles={[1, "ADMIN"]} />}>
                 <Route path="user" element={<User />} />
                 <Route path="user/save" element={<UserAddNew />} />
-                <Route path="user/:id" element={<UserDetails />} />
               </Route>
 
               {/* Staff-specific routes */}
-              <Route element={<RequireAuth allowedRoles={[2]} />}>
+              <Route element={<RequireAuth allowedRoles={[2, "STAFF"]} />}>
                 <Route path="transaction" element={<Transaction />} />
                 <Route
                   path="transaction/:id"

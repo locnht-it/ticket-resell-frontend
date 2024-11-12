@@ -58,7 +58,6 @@ const Category = () => {
     navigate("/category/save");
   };
 
-  // Hàm xử lý thay đổi trạng thái
   const handleStatusChange = async (categoryId) => {
     try {
       await changeCategoryStatus(categoryId);

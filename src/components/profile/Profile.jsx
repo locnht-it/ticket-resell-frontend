@@ -40,20 +40,17 @@ const ProfilePage = () => {
   const displayGender =
     userData.gender === 0
       ? "Male"
+      : userData.gender === "MALE"
+      ? "Male"
       : userData.gender === 1
       ? "Female"
+      : userData.gender === "FEMALE"
+      ? "Female"
+      : userData.gender === "OTHER"
+      ? "Other"
       : userData.gender === 2
       ? "Other"
       : "Unknown";
-
-  // const displayRole =
-  //   userData.role === 1
-  //     ? "ADMIN"
-  //     : userData.role === 2
-  //     ? "STAFF"
-  //     : userData.role === 0
-  //     ? "CUSTOMER"
-  //     : "Unknown";
 
   return (
     <div className="flex items-center justify-center p-1 bg-gray-100">

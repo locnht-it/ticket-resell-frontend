@@ -1,57 +1,62 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useTicketApi } from "../../api/ticketApi";
+import { toast } from "react-toastify";
 
 const TicketDetails = () => {
+  const { id } = useParams();
   const [ticket, setTicket] = useState(null);
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
+  const { getTicketByTicketId, changeTicketStatus } = useTicketApi();
 
-  const ticketData = {
-    id: 1,
-    name: `Joker`,
-    price: 100000,
-    quantity: 1,
-    expiredDate: `2024-10-12`,
-    venue: `CGV Cinema`,
-    categoryName: `Vé xem phim`,
-    status: `Active`,
-    seller: `Ta Gia Nhat Minh`,
-    images: [
-      { url: "https://via.placeholder.com/150" },
-      { url: "https://via.placeholder.com/150" },
-      { url: "https://via.placeholder.com/150" },
-    ],
-    reviews: [
-      {
-        userId: 1,
-        reviewerName: "NamLee",
-        reviewDate: "2024-10-15",
-        rating: 5,
-        comment: "Uy tín",
-      },
-      {
-        userId: 2,
-        reviewerName: "Hieu Chu Nhat",
-        reviewDate: "2024-10-16",
-        rating: 4,
-        comment: "Ship hơi lâu",
-      },
-    ],
+  const fetchTicketDetails = async () => {
+    try {
+      const response = await getTicketByTicketId(id);
+      if (response && response.data) {
+        setTicket(response.data.content);
+        setStatus(response.data.content.status);
+      } else {
+        console.error("Ticket not found.");
+      }
+    } catch (error) {
+      console.error("Error fetching ticket details:", error);
+    }
   };
 
   useEffect(() => {
-    setTicket(ticketData);
-    setStatus(ticketData.status);
-  }, []);
+    fetchTicketDetails();
+  }, [id]);
 
   const handleStatusChange = (event) => {
-    setStatus(event.target.value); // Cập nhật trạng thái khi chọn
+    setStatus(event.target.value);
   };
 
-  const handleStatusUpdate = () => {
-    // Giả lập cập nhật trạng thái (gửi request đến API trong thực tế)
-    setTicket({ ...ticket, status });
-    alert(`Ticket status has been updated to ${status}!`);
+  const handleStatusUpdate = async () => {
+    try {
+      const response = await changeTicketStatus(parseInt(id), status);
+      if (response?.data.statusCode === 202) {
+        toast.success(`Ticket status has been updated to ${status}!`);
+        setTicket({ ...ticket, status });
+      } else {
+        console.error(
+          "Failed to update ticket status",
+          response?.data?.message
+        );
+        toast.error(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error updating ticket status:", error);
+      toast.error("Error occurred while updating ticket status.");
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
   if (!ticket) {
@@ -64,8 +69,12 @@ const TicketDetails = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="mb-4 border border-gray-300 p-3 rounded">
+          <label className="block text-gray-700 font-bold mb-2">ID</label>
+          <p className="text-lg text-blue-700">{ticket.ticketId}</p>
+        </div>
+        <div className="mb-4 border border-gray-300 p-3 rounded">
           <label className="block text-gray-700 font-bold mb-2">Name</label>
-          <p className="text-lg">{ticket.name}</p>
+          <p className="text-lg">{ticket.ticketName}</p>
         </div>
 
         <div className="mb-4 border border-gray-300 p-3 rounded">
@@ -75,7 +84,12 @@ const TicketDetails = () => {
 
         <div className="mb-4 border border-gray-300 p-3 rounded">
           <label className="block text-gray-700 font-bold mb-2">Price</label>
-          <p className="text-lg">{ticket.price} VND</p>
+          <p className="text-lg">
+            {ticket.price.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </p>
         </div>
 
         <div className="mb-4 border border-gray-300 p-3 rounded">
@@ -92,47 +106,46 @@ const TicketDetails = () => {
           <label className="block text-gray-700 font-bold mb-2">
             Expired Date
           </label>
-          <p className="text-lg">
-            {new Date(ticket.expiredDate).toLocaleDateString()}
-          </p>
+          <p className="text-lg">{formatDate(ticket.expirationDate)}</p>
         </div>
 
         <div className="mb-4 border border-gray-300 p-3 rounded">
-          <label className="block text-gray-700 font-bold mb-2">Seller</label>
-          <p className="text-lg">{ticket.seller}</p>
+          <label className="block text-gray-700 font-bold mb-2">
+            Seller Email
+          </label>
+          <Link className="text-lg" to={`/user/${ticket.userId}`}>
+            {ticket.email}
+          </Link>
         </div>
 
-        {/* Trạng thái ticket với chức năng cập nhật */}
         <div className="mb-4 border border-gray-300 p-3 rounded">
           <label className="block text-gray-700 font-bold mb-2">Status</label>
           <select
             value={status}
             onChange={handleStatusChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
+            className="w-full px-3 py-2 border border-gray-300 rounded"
           >
             <option value="PENDING">PENDING</option>
-            <option value="VERIFIED">VERIFIED</option>
-            <option value="REJECTED">REJECTED</option>
+            <option value="ACTIVE">ACTIVE</option>
             <option value="CLOSED">CLOSED</option>
           </select>
           <button
             onClick={handleStatusUpdate}
-            className="mt-3 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+            className="mt-3 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Update Status
           </button>
         </div>
       </div>
 
-      {/* Ticket Images */}
       <div className="mb-6 border border-gray-300 p-3 rounded">
         <label className="block text-gray-700 font-bold mb-2">Images</label>
         <div className="flex space-x-4 overflow-x-auto">
-          {ticket.images?.length > 0 ? (
-            ticket.images.map((image, index) => (
+          {ticket.imageTicketDTOs?.length > 0 ? (
+            ticket.imageTicketDTOs.map((image, index) => (
               <img
                 key={index}
-                src={image.url}
+                src={image.imageUrl}
                 alt={`Ticket Image ${index + 1}`}
                 className="w-32 h-32 object-cover rounded-lg"
               />
@@ -143,35 +156,32 @@ const TicketDetails = () => {
         </div>
       </div>
 
-      {/* Customer Reviews */}
       <div className="mb-6 border border-gray-300 p-3 rounded">
         <h2 className="text-xl font-bold mb-2">Buyer's Feedback</h2>
-        {ticket.reviews && ticket.reviews.length > 0 ? (
-          ticket.reviews.map((review, index) => (
+        {ticket.feedbackDTOs && ticket.feedbackDTOs.length > 0 ? (
+          ticket.feedbackDTOs.map((feedback, index) => (
             <div
               key={index}
-              className={`mb-4 border border-gray-200 p-2 rounded `}
+              className="mb-4 border border-gray-200 p-2 rounded"
             >
-              <p className="font-semibold cursor-pointer text-blue-600">
-                <Link to={`/user/${review.userId}`}>{review.reviewerName}</Link>
-              </p>
-              <p className="text-gray-600">
-                {new Date(review.reviewDate).toLocaleDateString()}
+              <p className="font-semibold text-blue-600">
+                <Link to={`/user/${feedback.userId}`}>{feedback.name}</Link>
               </p>
               <p className="text-yellow-500">
-                {"★".repeat(review.rating) + "☆".repeat(5 - review.rating)}
+                {"★".repeat(feedback.rating) + "☆".repeat(5 - feedback.rating)}
               </p>
-              <p className="text-gray-700">{review.comment}</p>
-              {/* <button
-                className={`mt-2 px-4 py-1 rounded focus:outline-none ${
-                  review.isActive
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-gray-500 text-white hover:bg-gray-600"
-                }`}
-                onClick={() => handleToggleReviewStatus(index)}
-              >
-                {review.isActive ? "Inactive" : "Active"}
-              </button> */}
+              <p className="text-gray-700">{feedback.context}</p>
+              <div className="flex space-x-4 overflow-x-auto">
+                {feedback.imgs?.length > 0 &&
+                  feedback.imgs.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image.imageUrl}
+                      alt={`Feedback Image ${index + 1}`}
+                      className="w-32 h-32 object-cover rounded-lg"
+                    />
+                  ))}
+              </div>
             </div>
           ))
         ) : (
@@ -181,8 +191,8 @@ const TicketDetails = () => {
 
       <div className="flex justify-between mt-6">
         <button
-          className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none"
-          onClick={() => window.history.back()}
+          className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          onClick={() => navigate("/ticket")}
         >
           Back
         </button>

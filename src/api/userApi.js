@@ -80,6 +80,16 @@ export const useUserApi = () => {
     });
   };
 
+  const changePassword = async (password) => {
+    return await axios.post(
+      REST_API_BASE_URL + "/Authentication/change-password",
+      password,
+      {
+        headers: headers,
+      }
+    );
+  };
+
   return {
     editProfile,
     getAllUsers,
@@ -88,5 +98,6 @@ export const useUserApi = () => {
     changeUserStatus,
     searchUserByNameAndEmail,
     getUsersByRole,
+    changePassword,
   };
 };

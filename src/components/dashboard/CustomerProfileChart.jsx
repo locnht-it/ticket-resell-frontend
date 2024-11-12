@@ -1,16 +1,11 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { useDashboardApi } from "../../api/dashboardApi";
 
-const data = [
-  { name: "Male", value: 540 },
-  { name: "Female", value: 620 },
-  { name: "Others", value: 210 },
-];
-
-const RADIAN = Math.PI / 180;
 const COLORS = ["#00C49F", "#FFBB28", "#FF8042"];
+const RADIAN = Math.PI / 180;
 
-let renderCustomizedLabel = ({
+const renderCustomizedLabel = ({
   cx,
   cy,
   midAngle,
@@ -52,6 +47,38 @@ const CustomLegend = ({ data, colors }) => {
 };
 
 const CustomerProfileChart = () => {
+  const [chartData, setChartData] = useState([
+    { name: "Male", value: 0 },
+    { name: "Female", value: 0 },
+    { name: "Others", value: 0 },
+  ]);
+
+  const { getNumberOfGenderCustomer } = useDashboardApi();
+
+  // Sử dụng useCallback để tránh tái tạo hàm
+  const fetchGenderData = useCallback(async () => {
+    try {
+      const response = await getNumberOfGenderCustomer();
+      if (response?.data?.statusCode === 201) {
+        const { male, female, other } = response.data.content;
+
+        setChartData([
+          { name: "Male", value: male },
+          { name: "Female", value: female },
+          { name: "Others", value: other },
+        ]);
+      } else {
+        console.error("Failed to fetch gender data:", response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching gender data:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchGenderData();
+  }, [fetchGenderData]);
+
   return (
     <div className="w-[20rem] h-[24rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col">
       <strong className="text-gray-700 font-medium">Customer Profile</strong>
@@ -59,7 +86,7 @@ const CustomerProfileChart = () => {
         <ResponsiveContainer width="100%" height="100%">
           <PieChart width={400} height={400}>
             <Pie
-              data={data}
+              data={chartData}
               cx="50%"
               cy="50%"
               labelLine={false}
@@ -68,7 +95,7 @@ const CustomerProfileChart = () => {
               fill="#8884d8"
               dataKey="value"
             >
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
@@ -78,7 +105,7 @@ const CustomerProfileChart = () => {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <CustomLegend data={data} colors={COLORS} />
+      <CustomLegend data={chartData} colors={COLORS} />
     </div>
   );
 };

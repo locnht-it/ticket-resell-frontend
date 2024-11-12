@@ -4,12 +4,14 @@ import { useUserApi } from "../../api/userApi";
 import getUserRole from "../../lib/utils/UserRole";
 import getUserStatus from "../../lib/utils/UserStatus";
 import { toast, ToastContainer } from "react-toastify";
+import { useAuth } from "../../AuthContext";
 
 const UserDetails = () => {
   const { id } = useParams();
   const [account, setAccount] = useState(null);
   const navigate = useNavigate();
   const { getUserByUserId, changeUserStatus } = useUserApi();
+  const { auth } = useAuth();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -22,8 +24,14 @@ const UserDetails = () => {
           const gender =
             user.gender === 0
               ? "Male"
+              : user.gender === "MALE"
+              ? "Male"
               : user.gender === 1
               ? "Female"
+              : user.gender === "FEMALE"
+              ? "Female"
+              : user.gender === "OTHER"
+              ? "Other"
               : user.gender === 2
               ? "Other"
               : "Unknown";
@@ -113,20 +121,22 @@ const UserDetails = () => {
         <div className="flex justify-between mt-6">
           <button
             className="px-6 py-2 rounded bg-gray-500 text-white hover:bg-gray-600 focus:outline-none"
-            onClick={() => navigate("/user")}
+            onClick={() => navigate(-1)}
           >
             Back
           </button>
-          <button
-            className={`px-6 py-2 rounded ${
-              account.status === "Active"
-                ? "bg-red-500 text-white hover:bg-red-600"
-                : "bg-green-500 text-white hover:bg-green-600"
-            } focus:outline-none`}
-            onClick={handleToggleStatus}
-          >
-            {account.status === "Active" ? "Inactive" : "Active"}
-          </button>
+          {(auth.user.role === "ADMIN" || auth.user.role === 1) && (
+            <button
+              className={`px-6 py-2 rounded ${
+                account.status === "Active"
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-green-500 text-white hover:bg-green-600"
+              } focus:outline-none`}
+              onClick={handleToggleStatus}
+            >
+              {account.status === "Active" ? "Inactive" : "Active"}
+            </button>
+          )}
         </div>
       </div>
     </div>

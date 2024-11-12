@@ -30,16 +30,16 @@ const Login = () => {
 
     const success = await signIn(email, password);
     if (success) {
-      // Lấy thông tin người dùng từ localStorage
       const authData = JSON.parse(localStorage.getItem("authData"));
 
       if (
-        authData &&
-        authData.user &&
-        authData.user.role !== 1 &&
-        authData.user.role !== 2
+        !authData ||
+        !authData.user ||
+        ![1, 2, "ADMIN", "STAFF"].includes(authData.user.role)
       ) {
-        toast.error("You do not have permission to access.");
+        toast.error(
+          "You do not have permission to access or your credentials is not correct."
+        );
         return;
       }
 
