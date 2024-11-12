@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useAuth } from "../AuthContext";
 
-const REST_API_BASE_URL = "http://localhost:5220/api";
+const REST_API_BASE_URL =
+  "https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api";
 
 export const useHeaders = () => {
   const { auth } = useAuth();
@@ -26,10 +27,19 @@ export const useCategoryApi = () => {
 
   const createCategory = async (categoryName) => {
     return await axios.post(
-      REST_API_BASE_URL + "/TicketCategory/new-category",
+      `${REST_API_BASE_URL}/TicketCategory/new-category?categoryName=${categoryName}`,
       null,
       {
-        categoryName: categoryName,
+        headers: headers,
+      }
+    );
+  };
+
+  const changeCategoryStatus = async (id) => {
+    return await axios.post(
+      `${REST_API_BASE_URL}/TicketCategory/inactive?id=${id}`,
+      null,
+      {
         headers: headers,
       }
     );
@@ -47,6 +57,7 @@ export const useCategoryApi = () => {
   return {
     getAllCategories,
     createCategory,
+    changeCategoryStatus,
     getCategoryByCategoryId,
   };
 };

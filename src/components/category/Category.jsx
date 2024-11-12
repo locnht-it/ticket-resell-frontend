@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiOutlineSearch } from "react-icons/hi";
 import { useCategoryApi } from "../../api/categoryApi";
 import getCategoryStatus from "../../lib/utils/CategoryStatus";
+import { toast } from "react-toastify";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -11,14 +12,12 @@ const Category = () => {
   const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
-  const { getAllCategories } = useCategoryApi();
+  const { getAllCategories, changeCategoryStatus } = useCategoryApi();
 
   const fetchCategories = async () => {
     try {
       const response = await getAllCategories(searchTerm, page, limit);
-
       const data = response.data.content || [];
-
       console.log(`>>> Check data response of API getAllCategories: `, data);
 
       if (Array.isArray(data)) {
@@ -59,8 +58,16 @@ const Category = () => {
     navigate("/category/save");
   };
 
-  const handleCategoryUpdate = (id) => {
-    navigate(`/category/update/${id}`);
+  // Hàm xử lý thay đổi trạng thái
+  const handleStatusChange = async (categoryId) => {
+    try {
+      await changeCategoryStatus(categoryId);
+      toast.success("Change status successfully!");
+      fetchCategories();
+    } catch (error) {
+      console.error("Failed to change category status:", error);
+      toast.error("Failed to change category status");
+    }
   };
 
   return (
@@ -124,10 +131,14 @@ const Category = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                   <button
-                    className="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-                    onClick={() => handleCategoryUpdate(category.id)}
+                    className={`px-5 py-2 border ${
+                      category.status === "Active"
+                        ? "border-red-500 text-red-500 hover:bg-red-700"
+                        : "border-green-500 text-green-500 hover:bg-green-700"
+                    } rounded transition duration-300 hover:text-white focus:outline-none`}
+                    onClick={() => handleStatusChange(category.id)}
                   >
-                    Update
+                    {category.status === "Active" ? "Inactive" : "Active"}
                   </button>
                 </td>
               </tr>
@@ -137,7 +148,6 @@ const Category = () => {
         <div className="ml-auto mt-5 flex justify-end">
           {totalPages > 0 && (
             <nav className="relative z-0 inline-flex shadow-sm -space-x-px">
-              {/* Previous button */}
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -152,7 +162,6 @@ const Category = () => {
               >
                 &lt;
               </button>
-              {/* Page numbers */}
               {[...Array(totalPages)].map((_, index) => (
                 <button
                   key={index}
@@ -169,7 +178,6 @@ const Category = () => {
                   {index + 1}
                 </button>
               ))}
-              {/* Next button */}
               <button
                 onClick={(e) => {
                   e.preventDefault();

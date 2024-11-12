@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useAuth } from "../AuthContext";
 
-const REST_API_BASE_URL = "http://localhost:5220/api";
+const REST_API_BASE_URL =
+  "https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api";
 
 export const useHeaders = () => {
   const { auth } = useAuth();

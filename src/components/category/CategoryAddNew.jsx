@@ -1,30 +1,59 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCategoryApi } from "../../api/categoryApi";
+import { toast } from "react-toastify";
 
 const CategoryAddNew = () => {
-  const [category, setCategory] = useState({
-    name: "",
-    status: "Active",
-  });
-
+  const [categoryName, setCategoryName] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { createCategory } = useCategoryApi();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCategory({
-      ...category,
-      [name]: value,
-    });
+    const { value } = e.target;
+    setCategoryName(value);
+    setError("");
   };
 
-  const handleSubmit = (e) => {
+  const validateInput = () => {
+    if (!categoryName.trim()) {
+      setError("Category name is required");
+      return false;
+    }
+    return true;
+  };
+
+  // Hàm xử lý submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New Category:", category);
-    navigate("/category");
+    if (!validateInput()) return;
+
+    createCategory(categoryName)
+      .then((response) => {
+        if (response.data.statusCode === 400) {
+          toast.error(
+            response.data.message ||
+              "Failed to create category. Please check your input."
+          );
+          return;
+        }
+        toast.success("Account has been created successfully!");
+        navigate("/category");
+      })
+      .catch((error) => {
+        if (error.response && error.response.data) {
+          const errorMessage =
+            error.response.data.message || "An unexpected error occurred.";
+          toast.error(errorMessage);
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
+        console.error("Error creating user:", error);
+      });
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate("/category");
   };
 
   return (
@@ -37,25 +66,13 @@ const CategoryAddNew = () => {
           <input
             type="text"
             name="name"
-            value={category.name}
+            value={categoryName}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             required
           />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold">Status</label>
-          <select
-            name="status"
-            value={category.status}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-            required
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
+          {/* Hiển thị lỗi */}
+          {error && <p className="text-red-500 mt-1">{error}</p>}
         </div>
 
         <div className="flex justify-between">
