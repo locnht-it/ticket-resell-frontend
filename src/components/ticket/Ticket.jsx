@@ -107,22 +107,22 @@ const Ticket = () => {
         <table class="min-w-full">
           <thead>
             <tr>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Name
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Seller Email
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Price
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Expired Date
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Status
               </th>
               <th class="px-6 py-3 border-b-2 border-gray-300"></th>
@@ -131,34 +131,31 @@ const Ticket = () => {
           <tbody class="bg-white">
             {tickets.map((ticket) => (
               <tr>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-gray-800">
-                    <Link to={`/ticket/${ticket.ticketId}`}>
-                      #{ticket.ticketId}
-                    </Link>
-                  </div>
+                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  <Link to={`/ticket/${ticket.ticketId}`}>
+                    #{ticket.ticketId}
+                  </Link>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">
-                    {ticket.ticketName}
-                  </div>
+                <td class="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words">
+                  {ticket.ticketName}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+
+                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm leading-5 text-center">
                   <Link to={`/user/${ticket.userId}`}>{ticket.email}</Link>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b  border-gray-500 text-sm leading-5 text-center">
                   {formatDate(ticket.expirationDate)}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5 text-center">
                   {ticket.price.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                   })}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5 text-center">
                   {getTicketStatus(ticket.status)}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm leading-5 text-center">
                   <button
                     class="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
                     onClick={() => handleTicketDetails(ticket.ticketId)}

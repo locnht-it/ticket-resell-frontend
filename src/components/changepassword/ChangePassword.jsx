@@ -56,29 +56,29 @@ const ChangePassword = () => {
     const email = auth?.user?.email;
 
     if (!email) {
-      setError("User email not found. Please log in again.");
+      toast.error("User email not found. Please log in again.");
       return;
     }
 
     if (!oldPassword || !newPassword || !confirmPassword) {
-      setError("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
 
     if (oldPassword === newPassword) {
-      setError("New password must not be the same as the old password.");
+      toast.error("New password must not be the same as the old password.");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
 
     // Gọi hàm validate cho password mới
     const passwordError = validateNewPassword(newPassword);
     if (passwordError) {
-      setError(passwordError);
+      toast.error(passwordError);
       return;
     }
 
@@ -95,17 +95,17 @@ const ChangePassword = () => {
         toast.success("Change password successfully!");
         navigate(`/profile/${auth.user.id}`);
       } else {
-        setError("Failed to update password. Please try again.");
+        toast.error("Failed to update password. Please try again.");
       }
     } catch (error) {
-      setError("An error occurred. Please try again later.");
+      toast.error("An error occurred. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleBack = () => {
-    navigate("/profile");
+    navigate(`/profile/${auth.user.id}`);
   };
 
   return (

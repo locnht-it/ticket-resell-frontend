@@ -1,218 +1,212 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import getPlatformFeeStatus from "../../lib/utils/PlatformFeeStatus";
-
-const platformFeeData = [
-  {
-    id: 1,
-    name: `Package 10`,
-    quantity: 10,
-    status: `Active`,
-  },
-  {
-    id: 2,
-    name: `Package 20`,
-    quantity: 20,
-    status: `Active`,
-  },
-  {
-    id: 3,
-    name: `Package 50`,
-    quantity: 50,
-    status: `Inactive`,
-  },
-  {
-    id: 4,
-    name: `Package 100`,
-    quantity: 100,
-    status: `Inactive`,
-  },
-  {
-    id: 5,
-    name: `Package 200`,
-    quantity: 200,
-    status: `Active`,
-  },
-];
+import { usePlatformFeeApi } from "../../api/platformFeeApi";
 
 const PlatformFee = () => {
-  const [platformFees, setPlatformFees] = useState(platformFeeData);
+  const [platformFees, setPlatformFees] = useState([]);
+  // const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
+  const { getAllPlatformFees } = usePlatformFeeApi();
 
-  const handlePlatformFeeAddNew = () => {
+  const fetchPlatformFees = async () => {
+    try {
+      // const response = await getAllPlatformFees(searchTerm, page, limit);
+      const response = await getAllPlatformFees(page, limit);
+      const data = response.data.content || [];
+      console.log(`>>> Check data response of API getAllPlatformFees: `, data);
+
+      if (Array.isArray(data)) {
+        const updatedPlatformFees = data.map((platformFee) => ({
+          ...platformFee,
+          status: platformFee.isDeleted === false ? "Active" : "Inactive",
+        }));
+
+        setPlatformFees(updatedPlatformFees);
+      } else {
+        console.error("Dữ liệu không phải là mảng.");
+      }
+
+      const totalItems = response.data.size || 0;
+      const calculatedTotalPages = Math.ceil(totalItems / limit);
+      setTotalPages(calculatedTotalPages);
+    } catch (error) {
+      console.error("Failed to fetch platformFees:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   fetchPlatformFees();
+  // }, [page, searchTerm]);
+
+  useEffect(() => {
+    fetchPlatformFees();
+  }, [page]);
+
+  const handleSearch = () => {
+    setPage(1);
+    fetchPlatformFees();
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
+  const handleAddNewPlatformFee = () => {
     navigate("/platform-fee/save");
   };
 
-  const handlePlatformFeeUpdate = (id) => {
-    navigate(`/platform-fee/update/${id}`);
-  };
-
-  const handleToggleStatus = (id) => {
-    setPlatformFees((prevPratformFees) =>
-      prevPratformFees.map((platformFee) =>
-        platformFee.id === id
-          ? {
-              ...platformFee,
-              status: platformFee.status === "Active" ? "Inactive" : "Active",
-            }
-          : platformFee
-      )
-    );
+  const handleStatusChange = async (platformFeeId) => {
+    // try {
+    //   await changePlatformFeeStatus(platformFeeId);
+    //   toast.success("Change status successfully!");
+    //   fetchPlatformFees();
+    // } catch (error) {
+    //   console.error("Failed to change platformFee status:", error);
+    //   toast.error("Failed to change platformFee status");
+    // }
   };
 
   return (
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg">
+    <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
+      <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg">
         <strong className="text-gray-700 font-medium text-4xl text-center block pb-7">
           Platform Fee Management
         </strong>
-        <div class="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 work-sans pb-5">
+        <div className="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 pb-5">
+          {/* <div className="relative w-[24rem]">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="text-sm focus:outline-none active:outline-none h-10 w-full border border-gray-300 rounded-sm pl-4 pr-10"
+            />
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={handleSearch}
+            />
+          </div> */}
           <button
-            class="px-10 py-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none ml-auto font-bold"
-            onClick={handlePlatformFeeAddNew}
+            className="px-10 py-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none ml-auto font-bold"
+            onClick={handleAddNewPlatformFee}
           >
             Add New Platform Fee
           </button>
         </div>
-        <table class="min-w-full">
+        <table className="min-w-full">
           <thead>
             <tr>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Name
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Quantity
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
+                Price
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Status
               </th>
-              <th class="px-2 py-3 border-b-2 border-gray-300"></th>
-              <th class="px-2 py-3 border-b-2 border-gray-300"></th>
+              <th className="px-2 py-3 border-b-2 border-gray-300"></th>
             </tr>
           </thead>
-          <tbody class="bg-white">
+          <tbody className="bg-white">
             {platformFees.map((platformFee) => (
               <tr key={platformFee.id}>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-500">
-                    #{platformFee.id}
-                  </div>
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
+                  {platformFee.id}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">
-                    {platformFee.name}
-                  </div>
+                <td class="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words">
+                  {platformFee.name}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">
-                    {platformFee.quantity}
-                  </div>
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  {platformFee.quantity}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  {platformFee.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </td>
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm leading-5 text-center">
                   {getPlatformFeeStatus(platformFee.status)}
                 </td>
-                <td class="px-2 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap text-center border-b border-gray-500 text-sm leading-5 te">
                   <button
-                    class={`px-2 py-2 border ${
+                    className={`px-5 py-2 border ${
                       platformFee.status === "Active"
                         ? "border-red-500 text-red-500 hover:bg-red-700"
                         : "border-green-500 text-green-500 hover:bg-green-700"
                     } rounded transition duration-300 hover:text-white focus:outline-none`}
-                    onClick={() => handleToggleStatus(platformFee.id)}
+                    onClick={() => handleStatusChange(platformFee.id)}
                   >
-                    {platformFee.status === "Active"
-                      ? "Set Inactive"
-                      : "Set Active"}
+                    {platformFee.status === "Active" ? "Inactive" : "Active"}
                   </button>
-                </td>
-                <td class="px-2 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                  <div class="flex justify-end space-x-2">
-                    <button
-                      class="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-                      onClick={() => handlePlatformFeeUpdate(platformFee.id)}
-                    >
-                      Update
-                    </button>
-                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div class="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 work-sans pb-3">
-          {/* <div>
-            <p class="text-sm leading-5 text-blue-700">
-              Showing
-              <span class="font-medium">1</span>
-              to
-              <span class="font-medium">200</span>
-              of
-              <span class="font-medium">2000</span>
-              results
-            </p>
-          </div> */}
-          <div class="ml-auto">
-            <nav class="relative z-0 inline-flex shadow-sm">
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-                  aria-label="Previous"
+        <div className="ml-auto mt-5 flex justify-end">
+          {totalPages > 0 && (
+            <nav className="relative z-0 inline-flex shadow-sm -space-x-px">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page - 1);
+                }}
+                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                  page === 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+                disabled={page === 1}
+              >
+                &lt;
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(index + 1);
+                  }}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
+                    page === index + 1
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-500 hover:text-gray-700"
+                  }`}
                 >
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </div>
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-700 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  1
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-600 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  2
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-600 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  3
-                </a>
-              </div>
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-                  aria-label="Next"
-                >
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10l-3.293-3.293a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </div>
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page + 1);
+                }}
+                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                  page === totalPages
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+                disabled={page === totalPages}
+              >
+                &gt;
+              </button>
             </nav>
-          </div>
+          )}
         </div>
       </div>
     </div>

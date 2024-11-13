@@ -206,14 +206,6 @@ const ForgotPassword = () => {
                 </button>
               )}
             </p>
-            {/* {resendEnabled && (
-              <button
-                onClick={handleResendOtp}
-                className="text-blue-600 underline"
-              >
-                Resend OTP
-              </button>
-            )} */}
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <div className="flex justify-between">
               <button

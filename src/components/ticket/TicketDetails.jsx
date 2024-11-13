@@ -165,12 +165,15 @@ const TicketDetails = () => {
               className="mb-4 border border-gray-200 p-2 rounded"
             >
               <p className="font-semibold text-blue-600">
-                <Link to={`/user/${feedback.userId}`}>{feedback.name}</Link>
+                <Link to={`/user/${feedback.userId}`}>{feedback.fullName}</Link>
+              </p>
+              <p className="font-semibold text-gray-500">
+                {formatDate(feedback.createdDate)}
               </p>
               <p className="text-yellow-500">
                 {"★".repeat(feedback.rating) + "☆".repeat(5 - feedback.rating)}
               </p>
-              <p className="text-gray-700">{feedback.context}</p>
+              <p className="text-gray-700 mb-2">{feedback.context}</p>
               <div className="flex space-x-4 overflow-x-auto">
                 {feedback.imgs?.length > 0 &&
                   feedback.imgs.map((image, index) => (

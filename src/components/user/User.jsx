@@ -149,19 +149,19 @@ const User = () => {
         <table className="min-w-full">
           <thead>
             <tr>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Name
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Role
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300"></th>
@@ -170,26 +170,22 @@ const User = () => {
           <tbody className="bg-white">
             {users.map((user) => (
               <tr key={user.id}>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div className="text-sm leading-5 text-gray-800">
-                    <Link to={`/user/${user.id}`}>#{user.id}</Link>
-                  </div>
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  <Link to={`/user/${user.id}`}>#{user.id}</Link>
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div className="text-sm leading-5 text-blue-900">
-                    {user.fullname}
-                  </div>
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  {user.fullname}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
                   {user.email}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap border- border-gray-500 text-center">
                   {getUserRole(user.role)}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
                   {getUserStatus(user.status)}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap text-center border-b border-gray-500">
                   <button
                     className="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
                     onClick={() => handleUserDetails(user.id)}

@@ -100,13 +100,13 @@ const Category = () => {
         <table className="min-w-full">
           <thead>
             <tr>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Name
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Status
               </th>
               <th className="px-2 py-3 border-b-2 border-gray-300"></th>
@@ -115,20 +115,16 @@ const Category = () => {
           <tbody className="bg-white">
             {categories.map((category) => (
               <tr key={category.id}>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div className="text-sm leading-5 text-gray-800">
-                    <Link to={`/category/${category.id}`}>#{category.id}</Link>
-                  </div>
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-700 text-center">
+                  #{category.id}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <div className="text-sm leading-5 text-blue-900">
-                    {category.name}
-                  </div>
+                <td class="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words">
+                  {category.name}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5 text-center">
                   {getCategoryStatus(category.status)}
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm leading-5 text-center">
                   <button
                     className={`px-5 py-2 border ${
                       category.status === "Active"
