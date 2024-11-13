@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineTransaction } from "react-icons/ai";
 import { BsFillFilePostFill } from "react-icons/bs";
 import { IoBagHandle } from "react-icons/io5";
 import { RiBillFill } from "react-icons/ri";
+import { usePostApi } from "../../api/postApi";
 
 const DashboardStatsGrid = () => {
+  const [totalPosts, setTotalPosts] = useState();
+  const { getAllPosts } = usePostApi();
+
+  useEffect(() => {
+    getAllPosts("", "", 1, 1)
+      .then((response) => setTotalPosts(response.data.size))
+      .catch((error) => console.error("Failed to fetch total posts:", error));
+  }, []);
+
   return (
     <div className="flex gap-4 w-full">
       <BoxWrapper>
@@ -12,7 +22,9 @@ const DashboardStatsGrid = () => {
           <IoBagHandle className="text-2xl text-white" />
         </div>
         <div className="pl-4">
-          <span className="text-sm text-gray-500 font-bold">Total Sales</span>
+          <span className="text-sm text-gray-500 font-bold">
+            Total Revenues
+          </span>
           <div className="flex items-center">
             <strong className="text-xl text-gray-700 font-semibold">
               $3425.6
@@ -46,10 +58,9 @@ const DashboardStatsGrid = () => {
         <div className="pl-4">
           <span className="text-sm text-gray-500 font-bold">Total Posts</span>
           <div className="flex items-center">
-            <strong className="text-xl text-gray-700 font-semibold">50</strong>
-            <span className="text-sm text-green-500 pl-2 font-semibold">
-              +3
-            </span>
+            <strong className="text-xl text-gray-700 font-semibold">
+              {totalPosts}
+            </strong>
           </div>
         </div>
       </BoxWrapper>
