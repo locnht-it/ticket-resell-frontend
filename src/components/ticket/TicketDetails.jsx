@@ -13,12 +13,8 @@ const TicketDetails = () => {
   const fetchTicketDetails = async () => {
     try {
       const response = await getTicketByTicketId(id);
-      if (response && response.data) {
-        setTicket(response.data.content);
-        setStatus(response.data.content.status);
-      } else {
-        console.error("Ticket not found.");
-      }
+      setTicket(response.data.content);
+      setStatus(response.data.content.status);
     } catch (error) {
       console.error("Error fetching ticket details:", error);
     }
@@ -195,7 +191,7 @@ const TicketDetails = () => {
       <div className="flex justify-between mt-6">
         <button
           className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          onClick={() => navigate("/ticket")}
+          onClick={() => navigate(-1)}
         >
           Back
         </button>

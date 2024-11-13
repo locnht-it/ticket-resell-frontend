@@ -27,7 +27,6 @@ import PostDetails from "./components/post/PostDetails";
 import OrderDetails from "./components/order/OrderDetails";
 import Category from "./components/category/Category";
 import CategoryAddNew from "./components/category/CategoryAddNew";
-import CategoryUpdate from "./components/category/CategoryUpdate";
 import { AuthProvider } from "./AuthContext";
 import RequireAuth from "./RequireAuth";
 import NoAccess from "./NoAccess";
@@ -88,10 +87,6 @@ function App() {
                 <Route path="order/:id" element={<OrderDetails />} />
                 <Route path="category" element={<Category />} />
                 <Route path="category/save" element={<CategoryAddNew />} />
-                <Route
-                  path="category/update/:id"
-                  element={<CategoryUpdate />}
-                />
               </Route>
             </Route>
           </Route>

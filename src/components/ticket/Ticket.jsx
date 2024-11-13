@@ -143,15 +143,16 @@ const Ticket = () => {
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm leading-5 text-center">
                   <Link to={`/user/${ticket.userId}`}>{ticket.email}</Link>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b  border-gray-500 text-sm leading-5 text-center">
-                  {formatDate(ticket.expirationDate)}
-                </td>
                 <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5 text-center">
                   {ticket.price.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                   })}
                 </td>
+                <td class="px-6 py-4 whitespace-no-wrap border-b  border-gray-500 text-sm leading-5 text-center">
+                  {formatDate(ticket.expirationDate)}
+                </td>
+
                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5 text-center">
                   {getTicketStatus(ticket.status)}
                 </td>

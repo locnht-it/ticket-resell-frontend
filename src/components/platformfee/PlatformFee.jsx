@@ -124,8 +124,8 @@ const PlatformFee = () => {
           <tbody className="bg-white">
             {platformFees.map((platformFee) => (
               <tr key={platformFee.id}>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  {platformFee.id}
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center text-blue-700">
+                  #{platformFee.id}
                 </td>
                 <td class="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words">
                   {platformFee.name}
