@@ -2,20 +2,31 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import getPlatformFeeStatus from "../../lib/utils/PlatformFeeStatus";
 import { usePlatformFeeApi } from "../../api/platformFeeApi";
+import { HiOutlineSearch } from "react-icons/hi";
 
 const PlatformFee = () => {
   const [platformFees, setPlatformFees] = useState([]);
-  // const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
-  const { getAllPlatformFees } = usePlatformFeeApi();
+  const { getAllPlatformFees, getAllPlatformFeesNoSearch } =
+    usePlatformFeeApi();
 
   const fetchPlatformFees = async () => {
     try {
-      // const response = await getAllPlatformFees(searchTerm, page, limit);
-      const response = await getAllPlatformFees(page, limit);
+      let response;
+
+      // Kiểm tra nếu searchTerm là rỗng hoặc null
+      if (!searchTerm) {
+        // Gọi API không có searchTerm
+        response = await getAllPlatformFeesNoSearch(page, limit);
+      } else {
+        // Gọi API với searchTerm
+        response = await getAllPlatformFees(searchTerm, page, limit);
+      }
+
       const data = response.data.content || [];
       console.log(`>>> Check data response of API getAllPlatformFees: `, data);
 
@@ -38,9 +49,9 @@ const PlatformFee = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchPlatformFees();
-  // }, [page, searchTerm]);
+  useEffect(() => {
+    fetchPlatformFees();
+  }, [page, searchTerm]);
 
   useEffect(() => {
     fetchPlatformFees();
@@ -74,12 +85,12 @@ const PlatformFee = () => {
 
   return (
     <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
-      <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg">
+      <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 pb-3 rounded-bl-lg rounded-br-lg">
         <strong className="text-gray-700 font-medium text-4xl text-center block pb-7">
           Platform Fee Management
         </strong>
         <div className="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 pb-5">
-          {/* <div className="relative w-[24rem]">
+          <div className="relative w-[24rem]">
             <input
               type="text"
               placeholder="Search..."
@@ -92,7 +103,7 @@ const PlatformFee = () => {
               className="text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
               onClick={handleSearch}
             />
-          </div> */}
+          </div>
           <button
             className="px-10 py-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none ml-auto font-bold"
             onClick={handleAddNewPlatformFee}
@@ -158,56 +169,58 @@ const PlatformFee = () => {
             ))}
           </tbody>
         </table>
-        <div className="ml-auto mt-5 flex justify-end">
-          {totalPages > 0 && (
-            <nav className="relative z-0 inline-flex shadow-sm -space-x-px">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePageChange(page - 1);
-                }}
-                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
-                  page === 1
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-                disabled={page === 1}
-              >
-                &lt;
-              </button>
-              {[...Array(totalPages)].map((_, index) => (
+        {searchTerm === "" && (
+          <div className="ml-auto mt-5 flex justify-end">
+            {totalPages > 0 && (
+              <nav className="relative z-0 inline-flex shadow-sm -space-x-px">
                 <button
-                  key={index}
                   onClick={(e) => {
                     e.preventDefault();
-                    handlePageChange(index + 1);
+                    handlePageChange(page - 1);
                   }}
-                  className={`relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
-                    page === index + 1
-                      ? "bg-blue-500 text-white"
-                      : "bg-white text-gray-500 hover:text-gray-700"
+                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                    page === 1
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-500 hover:text-gray-700"
                   }`}
+                  disabled={page === 1}
                 >
-                  {index + 1}
+                  &lt;
                 </button>
-              ))}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePageChange(page + 1);
-                }}
-                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
-                  page === totalPages
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-                disabled={page === totalPages}
-              >
-                &gt;
-              </button>
-            </nav>
-          )}
-        </div>
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(index + 1);
+                    }}
+                    className={`relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
+                      page === index + 1
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(page + 1);
+                  }}
+                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                    page === totalPages
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  disabled={page === totalPages}
+                >
+                  &gt;
+                </button>
+              </nav>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

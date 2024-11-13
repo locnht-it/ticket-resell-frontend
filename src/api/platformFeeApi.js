@@ -14,7 +14,21 @@ export const useHeaders = () => {
 export const usePlatformFeeApi = () => {
   const headers = useHeaders();
 
-  const getAllPlatformFees = async (page, limit) => {
+  const getAllPlatformFees = async (query, page, limit) => {
+    return await axios.get(
+      REST_API_BASE_URL + "/PlatformFee/get-platform-fee/all",
+      {
+        params: {
+          query: query,
+          page: page,
+          limit: limit,
+        },
+        headers: headers,
+      }
+    );
+  };
+
+  const getAllPlatformFeesNoSearch = async (page, limit) => {
     return await axios.get(
       REST_API_BASE_URL + "/PlatformFee/get-platform-fee/all",
       {
@@ -29,5 +43,6 @@ export const usePlatformFeeApi = () => {
 
   return {
     getAllPlatformFees,
+    getAllPlatformFeesNoSearch,
   };
 };
