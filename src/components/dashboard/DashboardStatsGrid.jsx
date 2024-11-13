@@ -4,15 +4,22 @@ import { BsFillFilePostFill } from "react-icons/bs";
 import { IoBagHandle } from "react-icons/io5";
 import { RiBillFill } from "react-icons/ri";
 import { usePostApi } from "../../api/postApi";
+import { useOrderApi } from "../../api/orderApi";
 
 const DashboardStatsGrid = () => {
   const [totalPosts, setTotalPosts] = useState();
+  const [totalOrders, setTotalOrders] = useState();
   const { getAllPosts } = usePostApi();
+  const { getAllOrders } = useOrderApi();
 
   useEffect(() => {
     getAllPosts("", "", 1, 1)
       .then((response) => setTotalPosts(response.data.size))
       .catch((error) => console.error("Failed to fetch total posts:", error));
+
+    getAllOrders("", "", 1, 1)
+      .then((response) => setTotalOrders(response.data.size))
+      .catch((error) => console.error("Failed to fetch total orders:", error));
   }, []);
 
   return (
@@ -71,10 +78,9 @@ const DashboardStatsGrid = () => {
         <div className="pl-4">
           <span className="text-sm text-gray-500 font-bold">Total Orders</span>
           <div className="flex items-center">
-            <strong className="text-xl text-gray-700 font-semibold">68</strong>
-            <span className="text-sm text-green-500 pl-2 font-semibold">
-              +5
-            </span>
+            <strong className="text-xl text-gray-700 font-semibold">
+              {totalOrders}
+            </strong>
           </div>
         </div>
       </BoxWrapper>

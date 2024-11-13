@@ -9,7 +9,7 @@ const Category = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
   const { getAllCategories, changeCategoryStatus } = useCategoryApi();

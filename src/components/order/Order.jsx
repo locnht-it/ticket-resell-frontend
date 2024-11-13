@@ -58,7 +58,6 @@ const Order = () => {
         limit
       );
 
-      // Kiểm tra xem response.data.content có phải là một mảng không
       const orders = Array.isArray(response.data.content)
         ? response.data.content
         : [];
