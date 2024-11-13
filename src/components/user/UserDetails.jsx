@@ -125,18 +125,19 @@ const UserDetails = () => {
           >
             Back
           </button>
-          {(auth.user.role === "ADMIN" || auth.user.role === 1) && (
-            <button
-              className={`px-6 py-2 rounded ${
-                account.status === "Active"
-                  ? "bg-red-500 text-white hover:bg-red-600"
-                  : "bg-green-500 text-white hover:bg-green-600"
-              } focus:outline-none`}
-              onClick={handleToggleStatus}
-            >
-              {account.status === "Active" ? "Inactive" : "Active"}
-            </button>
-          )}
+          {(auth.user.role === 1 || auth.user.role === "ADMIN") &&
+            String(auth.user.id) !== String(id) && (
+              <button
+                className={`px-6 py-2 rounded ${
+                  account.status === "Active"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-green-500 text-white hover:bg-green-600"
+                } focus:outline-none`}
+                onClick={handleToggleStatus}
+              >
+                {account.status === "Active" ? "Inactive" : "Active"}
+              </button>
+            )}
         </div>
       </div>
     </div>

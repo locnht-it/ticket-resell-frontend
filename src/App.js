@@ -31,16 +31,16 @@ import CategoryUpdate from "./components/category/CategoryUpdate";
 import { AuthProvider } from "./AuthContext";
 import RequireAuth from "./RequireAuth";
 import NoAccess from "./NoAccess";
+import ForgotPassword from "./components/forgotpassword/ForgotPassword";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Login page */}
           <Route path="login" element={<Login />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
 
-          {/* Root path: Redirect to "/dashboard" */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
           {/* Protected routes */}
@@ -54,16 +54,17 @@ function App() {
               <Route path="profile/edit/:id" element={<ProfileUpdate />} />
               <Route path="support" element={<Support />} />
               <Route path="change-password" element={<ChangePassword />} />
+
               <Route path="no-access" element={<NoAccess />} />
               <Route path="user/:id" element={<UserDetails />} />
 
-              {/* Admin-specific routes */}
+              {/* Admin */}
               <Route element={<RequireAuth allowedRoles={[1, "ADMIN"]} />}>
                 <Route path="user" element={<User />} />
                 <Route path="user/save" element={<UserAddNew />} />
               </Route>
 
-              {/* Staff-specific routes */}
+              {/* Staff */}
               <Route element={<RequireAuth allowedRoles={[2, "STAFF"]} />}>
                 <Route path="transaction" element={<Transaction />} />
                 <Route

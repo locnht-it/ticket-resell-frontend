@@ -14,6 +14,21 @@ const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const { changePassword } = useUserApi();
   const { auth } = useAuth();
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const toggleShowOldPassword = () => {
+    setShowOldPassword((prev) => !prev);
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
 
   const validateNewPassword = (password) => {
     const minLength = /.{9,}/; // Ít nhất 9 ký tự
@@ -103,32 +118,179 @@ const ChangePassword = () => {
           Enter your old and new password
         </h2>
 
-        <input
-          type="password"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          className="w-full px-3 py-2 mb-4 border border-gray-300 rounded focus:outline-none"
-          placeholder="Old password"
-          required
-        />
+        <div className="relative mb-4">
+          <input
+            type={showOldPassword ? "text" : "password"}
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
+            placeholder="Old password"
+            required
+          />
+          <button
+            type="button"
+            onClick={toggleShowOldPassword}
+            className="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800 focus:outline-none"
+          >
+            {showPassword ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.548c.283-.368.76-.756 1.28-1.152C7.206 5.81 9.5 4.5 12 4.5s4.794 1.31 6.74 2.896c.52.396.997.784 1.28 1.152.244.32.244.688 0 1.008-.283.368-.76.756-1.28 1.152C16.794 14.19 14.5 15.5 12 15.5s-4.794-1.31-6.74-2.896c-.52-.396-.997-.784-1.28-1.152a.97.97 0 010-1.008z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.548a.97.97 0 010 1.008c.283.368.76.756 1.28 1.152C7.206 14.19 9.5 15.5 12 15.5s4.794-1.31 6.74-2.896c.52-.396.997-.784 1.28-1.152a.97.97 0 000-1.008c-.283-.368-.76-.756-1.28-1.152C16.794 5.81 14.5 4.5 12 4.5s-4.794 1.31-6.74 2.896c-.52.396-.997.784-1.28 1.152z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
 
-        <input
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="w-full px-3 py-2 mb-4 border border-gray-300 rounded focus:outline-none"
-          placeholder="New password"
-          required
-        />
+        <div className="relative mb-4">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
+            placeholder="New password"
+            required
+          />
+          <button
+            type="button"
+            onClick={toggleShowPassword}
+            className="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800 focus:outline-none"
+          >
+            {showPassword ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.548c.283-.368.76-.756 1.28-1.152C7.206 5.81 9.5 4.5 12 4.5s4.794 1.31 6.74 2.896c.52.396.997.784 1.28 1.152.244.32.244.688 0 1.008-.283.368-.76.756-1.28 1.152C16.794 14.19 14.5 15.5 12 15.5s-4.794-1.31-6.74-2.896c-.52-.396-.997-.784-1.28-1.152a.97.97 0 010-1.008z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.548a.97.97 0 010 1.008c.283.368.76.756 1.28 1.152C7.206 14.19 9.5 15.5 12 15.5s4.794-1.31 6.74-2.896c.52-.396.997-.784 1.28-1.152a.97.97 0 000-1.008c-.283-.368-.76-.756-1.28-1.152C16.794 5.81 14.5 4.5 12 4.5s-4.794 1.31-6.74 2.896c-.52.396-.997.784-1.28 1.152z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
 
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full px-3 py-2 mb-4 border border-gray-300 rounded focus:outline-none"
-          placeholder="Confirm new password"
-          required
-        />
+        <div className="relative mb-4">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
+            placeholder="Confirm new password"
+            required
+          />
+          <button
+            type="button"
+            onClick={toggleShowConfirmPassword}
+            className="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800 focus:outline-none"
+          >
+            {showConfirmPassword ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.548c.283-.368.76-.756 1.28-1.152C7.206 5.81 9.5 4.5 12 4.5s4.794 1.31 6.74 2.896c.52.396.997.784 1.28 1.152.244.32.244.688 0 1.008-.283.368-.76.756-1.28 1.152C16.794 14.19 14.5 15.5 12 15.5s-4.794-1.31-6.74-2.896c-.52-.396-.997-.784-1.28-1.152a.97.97 0 010-1.008z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.548a.97.97 0 010 1.008c.283.368.76.756 1.28 1.152C7.206 14.19 9.5 15.5 12 15.5s4.794-1.31 6.74-2.896c.52-.396.997-.784 1.28-1.152a.97.97 0 000-1.008c-.283-.368-.76-.756-1.28-1.152C16.794 5.81 14.5 4.5 12 4.5s-4.794 1.31-6.74 2.896c-.52.396-.997.784-1.28 1.152z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
