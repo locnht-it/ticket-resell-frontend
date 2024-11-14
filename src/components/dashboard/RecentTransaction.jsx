@@ -1,49 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import getTransactionStatus from "../../lib/utils/TransactionStatus";
-
-const recentTransactionData = [
-  {
-    id: `1`,
-    platformFeeName: `Package 10`,
-    customerId: `1`,
-    customerName: `NamLee`,
-    transactionDate: `2024-09-09`,
-    price: 240000,
-    status: `PENDING`,
-  },
-  {
-    id: `2`,
-    platformFeeName: `Package 20`,
-    customerId: `2`,
-    customerName: `Hieu Chu Nhat`,
-    transactionDate: `2024-09-09`,
-    price: 150000,
-    status: `COMPLETED`,
-  },
-  {
-    id: `3`,
-    platformFeeId: `3`,
-    platformFeeName: `Package 30`,
-    customerId: `3`,
-    customerName: `Minh Ta`,
-    transactionDate: `2024-09-09`,
-    price: 90000,
-    status: `PROCESSING`,
-  },
-  {
-    id: `4`,
-    platformFeeId: `4`,
-    platformFeeName: `Package 40`,
-    customerId: `4`,
-    customerName: `Vo Van Tinh`,
-    transactionDate: `2024-09-09`,
-    price: 300000,
-    status: `CANCELLED`,
-  },
-];
+import { useTransactionApi } from "../../api/transactionApi";
 
 const RecentTransaction = () => {
+  const [transactions, setTransactions] = useState([]);
+  const { getTopFiveRecentTransactions } = useTransactionApi();
+
+  useEffect(() => {
+    const fetchTopFiveRecentTransactions = async () => {
+      try {
+        const response = await getTopFiveRecentTransactions();
+        if (response && response.data.content) {
+          setTransactions(response.data.content);
+        } else {
+          console.log(
+            `>>> Check data from api getTopFiveRecentTransactions: `,
+            response
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
+    fetchTopFiveRecentTransactions();
+  }, []);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -60,7 +43,7 @@ const RecentTransaction = () => {
           <thead>
             <tr>
               <td className="text-center">ID</td>
-              <td className="text-center">PlatfromFee</td>
+              <td className="text-center">Platfrom Fee</td>
               <td className="text-center">Customer Name</td>
               <td className="text-center">Transaction Date</td>
               <td className="text-center">Price</td>
@@ -68,17 +51,19 @@ const RecentTransaction = () => {
             </tr>
           </thead>
           <tbody>
-            {recentTransactionData.map((transaction) => (
+            {transactions.map((transaction) => (
               <tr key={transaction.id}>
                 <td className="text-center">
                   <Link to={`/transaction/${transaction.id}`}>
                     #{transaction.id}
                   </Link>
                 </td>
-                <td className="text-center">{transaction.platformFeeName}</td>
                 <td className="text-center">
-                  <Link to={`/user/${transaction.customerId}`}>
-                    {transaction.customerName}
+                  {transaction.platformFeeDto.name}
+                </td>
+                <td className="text-center">
+                  <Link to={`/user/${transaction.userId}`}>
+                    {transaction.userName}
                   </Link>
                 </td>
                 <td className="text-center">

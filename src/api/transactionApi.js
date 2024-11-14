@@ -41,9 +41,16 @@ export const useTransactionApi = () => {
     });
   };
 
+  const getTopFiveRecentTransactions = async () => {
+    return await axios.get(REST_API_BASE_URL + "/Transaction/get-top-five", {
+      headers: headers,
+    });
+  };
+
   return {
     getAllTransactions,
     getTransactionByTransactionId,
     getTotalRevenue,
+    getTopFiveRecentTransactions,
   };
 };
