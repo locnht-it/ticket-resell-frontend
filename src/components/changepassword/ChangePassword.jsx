@@ -75,7 +75,6 @@ const ChangePassword = () => {
       return;
     }
 
-    // Gọi hàm validate cho password mới
     const passwordError = validateNewPassword(newPassword);
     if (passwordError) {
       toast.error(passwordError);
@@ -89,14 +88,14 @@ const ChangePassword = () => {
         password: oldPassword,
         newPassword: newPassword,
       };
-      const success = await changePassword(data);
-      if (success) {
-        setError("");
-        toast.success("Change password successfully!");
-        navigate(`/profile/${auth.user.id}`);
-      } else {
-        toast.error("Failed to update password. Please try again.");
+      const response = await changePassword(data);
+      if (response.data.statusCode === 400) {
+        toast.error(response.data.content);
+        return;
       }
+      setError("");
+      toast.success("Change password successfully!");
+      navigate(`/profile/${auth.user.id}`);
     } catch (error) {
       toast.error("An error occurred. Please try again later.");
     } finally {

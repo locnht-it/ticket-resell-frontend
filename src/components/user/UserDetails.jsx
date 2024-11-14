@@ -102,11 +102,7 @@ const UserDetails = () => {
         </div>
         <div className="mb-4 flex items-center">
           <strong className="text-gray-800 mr-2">Point:</strong>
-          <p className="text-gray-600">{account.point}</p>
-        </div>
-        <div className="mb-4 flex items-center">
-          <strong className="text-gray-800 mr-2">Post Times:</strong>
-          <p className="text-gray-600">{account.postTimes}</p>
+          <p className="text-gray-600">{account.point || 0}</p>
         </div>
         <div className="mb-4 flex items-center">
           <strong className="text-gray-800 mr-2">Gender:</strong>

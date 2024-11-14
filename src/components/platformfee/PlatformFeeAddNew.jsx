@@ -38,7 +38,7 @@ const PlatformFeeAddNew = () => {
     }
 
     if (platformFee.price < 10000) {
-      toast.error("Price is greater than 10.000 VND");
+      toast.error("Price is greater than or equal 10.000 VND");
       return;
     }
 

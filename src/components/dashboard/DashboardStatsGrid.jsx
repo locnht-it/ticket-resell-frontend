@@ -5,12 +5,16 @@ import { IoBagHandle } from "react-icons/io5";
 import { RiBillFill } from "react-icons/ri";
 import { usePostApi } from "../../api/postApi";
 import { useOrderApi } from "../../api/orderApi";
+import { useTransactionApi } from "../../api/transactionApi";
 
 const DashboardStatsGrid = () => {
   const [totalPosts, setTotalPosts] = useState();
   const [totalOrders, setTotalOrders] = useState();
+  const [totalTransaction, setTotalTransaction] = useState();
+  const [totalRevenue, setTotalRevenue] = useState();
   const { getAllPosts } = usePostApi();
   const { getAllOrders } = useOrderApi();
+  const { getAllTransactions, getTotalRevenue } = useTransactionApi();
 
   useEffect(() => {
     getAllPosts("", "", 1, 1)
@@ -20,6 +24,16 @@ const DashboardStatsGrid = () => {
     getAllOrders("", "", 1, 1)
       .then((response) => setTotalOrders(response.data.size))
       .catch((error) => console.error("Failed to fetch total orders:", error));
+
+    getAllTransactions("", "", 1, 1)
+      .then((response) => setTotalTransaction(response.data.size))
+      .catch((error) =>
+        console.error("Failed to fetch total transactions:", error)
+      );
+
+    getTotalRevenue()
+      .then((response) => setTotalRevenue(response.data.content))
+      .catch((error) => console.error("Failed to fetch total revenue:", error));
   }, []);
 
   return (
@@ -34,11 +48,11 @@ const DashboardStatsGrid = () => {
           </span>
           <div className="flex items-center">
             <strong className="text-xl text-gray-700 font-semibold">
-              $3425.6
+              {totalRevenue?.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
             </strong>
-            <span className="text-sm text-green-500 pl-2 font-semibold">
-              +234
-            </span>
           </div>
         </div>
       </BoxWrapper>
@@ -51,10 +65,9 @@ const DashboardStatsGrid = () => {
             Total Transactions
           </span>
           <div className="flex items-center">
-            <strong className="text-xl text-gray-700 font-semibold">50</strong>
-            <span className="text-sm text-green-500 pl-2 font-semibold">
-              +2
-            </span>
+            <strong className="text-xl text-gray-700 font-semibold">
+              {totalTransaction}
+            </strong>
           </div>
         </div>
       </BoxWrapper>

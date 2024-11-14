@@ -1,120 +1,213 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import getTransactionStatus from "../../lib/utils/TransactionStatus";
-
-const transactionData = [
-  {
-    id: `1`,
-    platformFeeId: `1`,
-    platformFeeName: `Package 10`,
-    customerId: `10000`,
-    customerName: `NamLee`,
-    transactionDate: `2024-09-09`,
-    price: `$435.50`,
-    status: `PENDING`,
-  },
-  {
-    id: `2`,
-    platformFeeId: `2`,
-    platformFeeName: `Package 20`,
-    customerId: `10000`,
-    customerName: `Hieu Chu Nhat`,
-    transactionDate: `2024-09-09`,
-    price: `$535.50`,
-    status: `COMPLETED`,
-  },
-  {
-    id: `3`,
-    platformFeeId: `3`,
-    platformFeeName: `Package 50`,
-    customerId: `10000`,
-    customerName: `Minh Ta`,
-    transactionDate: `2024-09-09`,
-    price: `$335.50`,
-    status: `PROCESSING`,
-  },
-  {
-    id: `4`,
-    platformFeeId: `4`,
-    platformFeeName: `Package 100`,
-    customerId: `10000`,
-    customerName: `Vo Van Tinh`,
-    transactionDate: `2024-09-09`,
-    price: `$535.50`,
-    status: `CANCELLED`,
-  },
-];
+import { useTransactionApi } from "../../api/transactionApi";
+import { toast } from "react-toastify";
+import { useUserApi } from "../../api/userApi";
 
 const Transaction = () => {
   const navigate = useNavigate();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [transactions, setTransactions] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const { getAllTransactions } = useTransactionApi();
+  const { getUserByUserId } = useUserApi();
+  const [filterStartDate, setFilterStartDate] = useState("");
+  const [filterEndDate, setFilterEndDate] = useState("");
+
+  const MIN_DATE = new Date("2024-01-01");
+  const MAX_DATE = new Date("2024-12-31");
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const validateDateRange = (date) => {
+    const selectedDate = new Date(date);
+    return selectedDate >= MIN_DATE && selectedDate <= MAX_DATE;
+  };
+
+  const handleFilter = () => {
+    if (!validateDateRange(startDate) || !validateDateRange(endDate)) {
+      toast.error("Date must be between 01/01/2024 and 31/12/2024");
+      return;
+    }
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      toast.error("Start Date cannot be greater than End Date");
+      return;
+    }
+    setPage(1);
+    setFilterStartDate(startDate);
+    setFilterEndDate(endDate);
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      console.log(
+        `>>> Check startDate, endDate before call api getAllTransactions: `,
+        startDate,
+        endDate
+      );
+      const formattedStartDate = startDate ? formatDate(startDate) : null;
+      const formattedEndDate = endDate ? formatDate(endDate) : null;
+
+      const response = await getAllTransactions(
+        formattedStartDate,
+        formattedEndDate,
+        limit,
+        page
+      );
+
+      const transactions = Array.isArray(response.data.content)
+        ? response.data.content
+        : [];
+
+      console.log(
+        `>>> Check response from api getAllTransactions: `,
+        transactions
+      );
+
+      const updatedTransactions = await Promise.all(
+        transactions.map(async (transaction) => {
+          const userResponse = await getUserByUserId(transaction.userId);
+
+          return {
+            ...transaction,
+            buyerName: userResponse?.data?.content?.fullname,
+          };
+        })
+      );
+
+      setTransactions(updatedTransactions);
+      const totalItems = response.data.size || 0;
+      setTotalPages(Math.ceil(totalItems / limit));
+    } catch (error) {
+      console.error("Failed to fetch transactions:", error);
+      toast.error("Failed to load transactions");
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [filterStartDate, filterEndDate, page]);
 
   const handleTransactionDetails = (id) => {
     navigate(`/transaction/${id}`);
   };
+
+  const handleClear = () => {
+    setStartDate("");
+    setEndDate("");
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
   return (
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 pb-3 rounded-bl-lg rounded-br-lg">
+    <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
+      <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 pb-3 rounded-bl-lg rounded-br-lg">
         <strong className="text-gray-700 font-medium text-4xl text-center block pb-10">
           Transaction Management
         </strong>
-        <table class="min-w-full">
+
+        <div className="flex gap-4 mb-5 items-end">
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-700 mb-1">Start Date</label>
+            <input
+              type="date"
+              className="border px-4 py-2 rounded"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-700 mb-1">End Date</label>
+            <input
+              type="date"
+              className="border px-4 py-2 rounded"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+          <button
+            onClick={handleFilter}
+            className="px-4 py-2 text-sm text-blue-500 border border-blue-300 rounded ml-4 hover:bg-blue-500 hover:text-white focus:outline-none"
+          >
+            Filter
+          </button>
+          <button
+            onClick={handleClear}
+            className="px-4 py-2 text-sm text-green-500 border border-green-300 rounded ml-4 hover:bg-green-500 hover:text-white focus:outline-none"
+          >
+            Clear
+          </button>
+        </div>
+
+        <table className="min-w-full">
           <thead>
             <tr>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 Platform Fee
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
-                Customer Name
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
+                Buyer Name
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 Transaction Date
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
-                Total Price
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
+                Price
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
+              <th className="px-6 py-3 border-b-2 border-gray-300 text-center leading-4 text-blue-500 tracking-wider">
                 Status
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300"></th>
+              <th className="px-6 py-3 border-b-2 border-gray-300"></th>
             </tr>
           </thead>
-          <tbody class="bg-white">
-            {transactionData.map((transaction) => (
-              <tr>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
-                  <div class="text-sm leading-5 text-gray-800">
-                    <Link to={`/transaction/${transaction.id}`}>
-                      #{transaction.id}
-                    </Link>
-                  </div>
+          <tbody className="bg-white">
+            {transactions.map((transaction) => (
+              <tr key={transaction.id}>
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  <Link to={`/order/${transaction.id}`}>#{transaction.id}</Link>
                 </td>
-                <td class="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words text-center">
-                  <div class="text-sm leading-5 text-blue-900">
-                    <Link to={`/platform-fee/${transaction.platformFeeId}`}>
-                      {transaction.platformFeeName}
-                    </Link>
-                  </div>
+                <td className="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words">
+                  {transaction.platformFeeId}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm text-center">
-                  <Link to={`/users/${transaction.customerId}`}>
-                    {transaction.customerName}
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  <Link to={`/user/${transaction.userId}`}>
+                    {transaction.buyerName}
                   </Link>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm text-center">
-                  {new Date(transaction.transactionDate).toLocaleDateString()}
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  {formatDate(transaction.transactionDate)}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm text-center">
-                  {transaction.price}
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                  {transaction.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm text-center">
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
                   {getTransactionStatus(transaction.status)}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm text-center">
+
+                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
                   <button
-                    class="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+                    className="px-5 py-2 border-blue-500 border text-blue-500 rounded hover:bg-blue-700 hover:text-white"
                     onClick={() => handleTransactionDetails(transaction.id)}
                   >
                     View Details
@@ -124,66 +217,55 @@ const Transaction = () => {
             ))}
           </tbody>
         </table>
-        <div class="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 work-sans pb-3">
-          <div class="ml-auto">
-            <nav class="relative z-0 inline-flex shadow-sm">
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-                  aria-label="Previous"
+        <div className="ml-auto mt-5 flex justify-end">
+          {totalPages > 0 && (
+            <nav className="relative z-0 inline-flex shadow-sm -space-x-px">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page - 1);
+                }}
+                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                  page === 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+                disabled={page === 1}
+              >
+                &lt;
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(index + 1);
+                  }}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm leading-5 font-medium ${
+                    page === index + 1
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-500 hover:text-gray-700"
+                  }`}
                 >
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </div>
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-700 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  1
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-600 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  2
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-blue-600 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary"
-                >
-                  3
-                </a>
-              </div>
-              <div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-                  aria-label="Next"
-                >
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10l-3.293-3.293a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </div>
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page + 1);
+                }}
+                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium ${
+                  page === totalPages
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+                disabled={page === totalPages}
+              >
+                &gt;
+              </button>
             </nav>
-          </div>
+          )}
         </div>
       </div>
     </div>
