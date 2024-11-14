@@ -48,6 +48,11 @@ const Order = () => {
 
   const fetchOrders = async () => {
     try {
+      console.log(
+        `>>> Check startDay, endDay before call api getAllOrders: `,
+        startDay,
+        endDay
+      );
       const formattedStartDate = startDay ? formatDate(startDay) : null;
       const formattedEndDate = endDay ? formatDate(endDay) : null;
 
@@ -86,8 +91,10 @@ const Order = () => {
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, [page]);
+    if (!startDay && !endDay) {
+      fetchOrders();
+    }
+  }, [startDay, endDay, page]);
 
   const handleOrderDetails = (id) => {
     navigate(`/order/${id}`);
@@ -97,7 +104,6 @@ const Order = () => {
     setStartDay("");
     setEndDay("");
     setPage(1);
-    fetchOrders();
   };
 
   const handlePageChange = (newPage) => {

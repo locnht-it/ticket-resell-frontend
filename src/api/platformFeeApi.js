@@ -41,8 +41,30 @@ export const usePlatformFeeApi = () => {
     );
   };
 
+  const createPlatformFee = async (platformFee) => {
+    return await axios.post(
+      REST_API_BASE_URL + "/PlatformFee/add-platform-fee",
+      platformFee,
+      {
+        headers: headers,
+      }
+    );
+  };
+
+  const changePlatformFeeStatus = async (platformFeeId) => {
+    return await axios.post(
+      `${REST_API_BASE_URL}/PlatformFee/change-status/${platformFeeId}`,
+      null,
+      {
+        headers: headers,
+      }
+    );
+  };
+
   return {
     getAllPlatformFees,
     getAllPlatformFeesNoSearch,
+    createPlatformFee,
+    changePlatformFeeStatus,
   };
 };

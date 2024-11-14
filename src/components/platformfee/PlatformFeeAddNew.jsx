@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import platformFeeApi, { usePlatformFeeApi } from "../../api/platformFeeApi";
+import { toast } from "react-toastify";
 
 const PlatformFeeAddNew = () => {
   const [platformFee, setPlatformFee] = useState({
     name: "",
-    quantity: 0,
-    status: "Active",
+    quantity: 1,
+    price: 10000,
   });
 
   const navigate = useNavigate();
+  const { createPlatformFee } = usePlatformFeeApi();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,14 +21,43 @@ const PlatformFeeAddNew = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  // Hàm submit form
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New Platform Fee:", platformFee);
-    navigate("/platform-fee");
-  };
 
-  const handleBack = () => {
-    navigate(-1);
+    if (!platformFee.name.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+
+    if (platformFee.quantity <= 0 || platformFee.quantity > 1000) {
+      toast.error(
+        "Quantity is greater than 0 or quantity is less than or equal 1000"
+      );
+      return;
+    }
+
+    if (platformFee.price < 10000) {
+      toast.error("Price is greater than 10.000 VND");
+      return;
+    }
+
+    try {
+      const response = await createPlatformFee(platformFee);
+
+      if (response.data.statusCode !== 201) {
+        toast.error(response.data.content || "Create new platform fee failed");
+        return;
+      }
+
+      console.log("New Platform Fee:", platformFee);
+      toast.success("Create new platform fee successfully");
+
+      navigate("/platform-fee");
+    } catch (error) {
+      console.error("Error creating platform fee:", error);
+      toast.error("Create new platform fee failed");
+    }
   };
 
   return (
@@ -60,24 +92,22 @@ const PlatformFeeAddNew = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold">Status</label>
-          <select
-            name="status"
-            value={platformFee.status}
+          <label className="block text-gray-700 font-bold">Price</label>
+          <input
+            type="number"
+            name="price"
+            value={platformFee.price}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             required
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
+          />
         </div>
 
         <div className="flex justify-between">
           <button
             type="button"
             className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-gray-700"
-            onClick={handleBack}
+            onClick={() => navigate("/platform-fee")}
           >
             Back
           </button>

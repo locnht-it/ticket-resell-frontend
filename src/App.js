@@ -19,7 +19,6 @@ import ProfilePage from "./components/profile/Profile";
 import ProfileUpdate from "./components/profile/ProfileUpdate";
 import TransactionDetails from "./components/transaction/TransactionDetails";
 import PlatformFeeAddNew from "./components/platformfee/PlatformFeeAddNew";
-import PlatformFeeUpdate from "./components/platformfee/PlatformFeeUpdate";
 import UserAddNew from "./components/user/UserAddNew";
 import UserDetails from "./components/user/UserDetails";
 import TicketDetails from "./components/ticket/TicketDetails";
@@ -72,10 +71,7 @@ function App() {
                   path="platform-fee/save"
                   element={<PlatformFeeAddNew />}
                 />
-                <Route
-                  path="platform-fee/update/:id"
-                  element={<PlatformFeeUpdate />}
-                />
+
                 <Route path="post" element={<Post />} />
                 <Route path="post/:id" element={<PostDetails />} />
                 <Route path="ticket" element={<Ticket />} />

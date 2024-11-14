@@ -17,6 +17,7 @@ const Ticket = () => {
   const fetchTickets = async () => {
     try {
       const response = await getAllTickets(status, searchTerm, page, limit);
+      console.log(`>>> Check data from getAllTickets: `, response.data.content);
       setTickets(response.data.content);
       const totalItems = response.data.size || 0;
       const calculatedTotalPages = Math.ceil(totalItems / limit);

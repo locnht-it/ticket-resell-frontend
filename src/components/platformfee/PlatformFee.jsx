@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import getPlatformFeeStatus from "../../lib/utils/PlatformFeeStatus";
 import { usePlatformFeeApi } from "../../api/platformFeeApi";
 import { HiOutlineSearch } from "react-icons/hi";
+import { toast } from "react-toastify";
 
 const PlatformFee = () => {
   const [platformFees, setPlatformFees] = useState([]);
@@ -11,8 +12,11 @@ const PlatformFee = () => {
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
-  const { getAllPlatformFees, getAllPlatformFeesNoSearch } =
-    usePlatformFeeApi();
+  const {
+    getAllPlatformFees,
+    getAllPlatformFeesNoSearch,
+    changePlatformFeeStatus,
+  } = usePlatformFeeApi();
 
   const fetchPlatformFees = async () => {
     try {
@@ -72,14 +76,14 @@ const PlatformFee = () => {
   };
 
   const handleStatusChange = async (platformFeeId) => {
-    // try {
-    //   await changePlatformFeeStatus(platformFeeId);
-    //   toast.success("Change status successfully!");
-    //   fetchPlatformFees();
-    // } catch (error) {
-    //   console.error("Failed to change platformFee status:", error);
-    //   toast.error("Failed to change platformFee status");
-    // }
+    try {
+      await changePlatformFeeStatus(platformFeeId);
+      toast.success("Change status successfully!");
+      fetchPlatformFees();
+    } catch (error) {
+      console.error("Failed to change platformFee status:", error);
+      toast.error("Failed to change platformFee status");
+    }
   };
 
   return (
