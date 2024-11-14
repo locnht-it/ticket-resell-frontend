@@ -18,7 +18,6 @@ const PlatformFee = () => {
     try {
       let response;
 
-      // Kiểm tra nếu searchTerm là rỗng hoặc null
       if (!searchTerm) {
         // Gọi API không có searchTerm
         response = await getAllPlatformFeesNoSearch(page, limit);

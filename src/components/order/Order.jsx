@@ -173,7 +173,7 @@ const Order = () => {
                 <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
                   <Link to={`/order/${order.id}`}>#{order.id}</Link>
                 </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
+                <td className="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words">
                   <Link to={`/ticket/${order.ticketId}`}>
                     {order.ticketName}
                   </Link>

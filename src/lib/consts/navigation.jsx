@@ -19,6 +19,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     icon: <HiOutlineViewGrid />,
   },
   {
+    key: `user`,
+    label: `User`,
+    path: `/user`,
+    icon: <HiOutlineUsers />,
+  },
+  {
     key: `transaction`,
     label: `Transaction`,
     path: `/transaction`,
@@ -29,12 +35,6 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     label: `Platform Fee`,
     path: `/platform-fee`,
     icon: <HiOutlineCube />,
-  },
-  {
-    key: `user`,
-    label: `User`,
-    path: `/user`,
-    icon: <HiOutlineUsers />,
   },
   {
     key: `ticket`,

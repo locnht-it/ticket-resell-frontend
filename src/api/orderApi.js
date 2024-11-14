@@ -29,7 +29,17 @@ export const useOrderApi = () => {
     );
   };
 
+  const getOrderByOrderId = async (orderId) => {
+    return await axios.get(REST_API_BASE_URL + "/Order/get-order-by-order-id", {
+      params: {
+        orderId: orderId,
+      },
+      headers: headers,
+    });
+  };
+
   return {
     getAllOrders,
+    getOrderByOrderId,
   };
 };

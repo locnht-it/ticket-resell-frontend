@@ -60,22 +60,22 @@ const Transaction = () => {
         <table class="min-w-full">
           <thead>
             <tr>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 ID
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Platform Fee
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Customer Name
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Transaction Date
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Total Price
               </th>
-              <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">
+              <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm leading-4 text-blue-500 tracking-wider">
                 Status
               </th>
               <th class="px-6 py-3 border-b-2 border-gray-300"></th>
@@ -84,35 +84,35 @@ const Transaction = () => {
           <tbody class="bg-white">
             {transactionData.map((transaction) => (
               <tr>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
+                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-center">
                   <div class="text-sm leading-5 text-gray-800">
                     <Link to={`/transaction/${transaction.id}`}>
                       #{transaction.id}
                     </Link>
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
+                <td class="px-6 py-4 whitespace-normal border-b border-gray-500 text-center break-words text-center">
                   <div class="text-sm leading-5 text-blue-900">
                     <Link to={`/platform-fee/${transaction.platformFeeId}`}>
                       {transaction.platformFeeName}
                     </Link>
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm text-center">
                   <Link to={`/users/${transaction.customerId}`}>
                     {transaction.customerName}
                   </Link>
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm text-center">
                   {new Date(transaction.transactionDate).toLocaleDateString()}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm text-center">
                   {transaction.price}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-blue-900 text-sm text-center">
                   {getTransactionStatus(transaction.status)}
                 </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm text-center">
                   <button
                     class="px-5 py-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
                     onClick={() => handleTransactionDetails(transaction.id)}
@@ -125,17 +125,6 @@ const Transaction = () => {
           </tbody>
         </table>
         <div class="sm:flex-1 sm:flex sm:items-center sm:justify-between mt-4 work-sans pb-3">
-          {/* <div>
-            <p class="text-sm leading-5 text-blue-700">
-              Showing
-              <span class="font-medium">1</span>
-              to
-              <span class="font-medium">200</span>
-              of
-              <span class="font-medium">2000</span>
-              results
-            </p>
-          </div> */}
           <div class="ml-auto">
             <nav class="relative z-0 inline-flex shadow-sm">
               <div>

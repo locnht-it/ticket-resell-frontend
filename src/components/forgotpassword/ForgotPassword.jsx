@@ -15,6 +15,7 @@ const ForgotPassword = () => {
   const [resendEnabled, setResendEnabled] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [status, setStatus] = useState(false);
 
   const {
     checkEmailForgotPassword,
@@ -74,6 +75,7 @@ const ForgotPassword = () => {
         toast.error(response.data.content);
         return;
       }
+      setStatus(true);
       setStep(3); // Chuyển sang bước 3: Nhập mật khẩu mới
       setError("");
     } catch (error) {
@@ -111,6 +113,7 @@ const ForgotPassword = () => {
   const handleChangePassword = async () => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const userEmail = userData?.email;
+    const data = { email: userEmail, newPassword, status };
 
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,}$/;
@@ -127,7 +130,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      await changeForgotPassword(userEmail, newPassword);
+      await changeForgotPassword(data);
       localStorage.removeItem("userData");
       toast.success("Change password successfully!");
       navigate("/login");

@@ -27,13 +27,13 @@ export const useTicketApi = () => {
   };
 
   const changeTicketStatus = async (ticketId, status) => {
-    return await axios.get(REST_API_BASE_URL + "/Ticket/manager-action", {
-      params: {
-        ticketId: ticketId,
-        status: status,
-      },
-      headers: headers,
-    });
+    return await axios.put(
+      `${REST_API_BASE_URL}/Ticket/manager-action?ticketId=${ticketId}&status=${status}`,
+      null,
+      {
+        headers: headers,
+      }
+    );
   };
 
   const getTicketByTicketId = async (ticketId) => {

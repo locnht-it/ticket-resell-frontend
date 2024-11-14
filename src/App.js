@@ -56,6 +56,8 @@ function App() {
 
               <Route path="no-access" element={<NoAccess />} />
               <Route path="user/:id" element={<UserDetails />} />
+              <Route path="transaction" element={<Transaction />} />
+              <Route path="transaction/:id" element={<TransactionDetails />} />
 
               {/* Admin */}
               <Route element={<RequireAuth allowedRoles={[1, "ADMIN"]} />}>
@@ -65,11 +67,6 @@ function App() {
 
               {/* Staff */}
               <Route element={<RequireAuth allowedRoles={[2, "STAFF"]} />}>
-                <Route path="transaction" element={<Transaction />} />
-                <Route
-                  path="transaction/:id"
-                  element={<TransactionDetails />}
-                />
                 <Route path="platform-fee" element={<PlatformFee />} />
                 <Route
                   path="platform-fee/save"

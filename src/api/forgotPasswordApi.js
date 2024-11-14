@@ -44,10 +44,10 @@ export const useForgotPasswordApi = () => {
     );
   };
 
-  const changeForgotPassword = async (email, password) => {
+  const changeForgotPassword = async (object) => {
     return await axios.post(
-      `${REST_API_BASE_URL}/Authentication/change-forgot-password?email=${email}&password=${password}`,
-      null,
+      `${REST_API_BASE_URL}/Authentication/change-forgot-password`,
+      object,
       {
         headers: headers,
       }
